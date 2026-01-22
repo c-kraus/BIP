@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML Lifecycle Bias Flowchart</title>
+    <style>
+        /* THWS Design System & Reset */
+        :root {
+            --thws-orange: #ff6a00;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --bg-white: #ffffff;
+            --border-light: #eeeeee;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: var(--text-dark);
+            background-color: transparent;
+            /* Transparent for iframe blend */
+        }
+
+        .thws-card {
+            border-left: 5px solid var(--thws-orange);
+            background: var(--bg-white);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-light);
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        p.subtitle {
+            margin: 0 0 20px 0;
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        /* SVG Visualization Styles */
+        .viz-container {
+            width: 100%;
+            margin-bottom: 20px;
+            background: #fafafa;
+            /* Slight contrast for the diagram area */
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+            overflow: hidden;
+        }
+
+        svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* SVG Elements */
+        .stage-rect {
+            fill: #ffffff;
+            stroke: #cccccc;
+            stroke-width: 2;
+            rx: 6;
+            transition: all 0.3s ease;
+        }
+
+        .stage-text {
+            font-weight: 600;
+            font-size: 14px;
+            fill: var(--text-dark);
+            text-anchor: middle;
+            dominant-baseline: middle;
+            pointer-events: none;
+        }
+
+        .connector {
+            fill: none;
+            stroke: #cccccc;
+            stroke-width: 2;
+            marker-end: url(#arrowhead);
+        }
+
+        .feedback-connector {
+            fill: none;
+            stroke: var(--thws-orange);
+            stroke-width: 2;
+            stroke-dasharray: 5, 5;
+            marker-end: url(#arrowhead-orange);
+            opacity: 0.7;
+        }
+
+        /* Interactive Bias Nodes */
+        .bias-group {
+            cursor: pointer;
+        }
+
+        .bias-node {
+            fill: #fff0e6;
+            stroke: var(--thws-orange);
+            stroke-width: 2;
+            rx: 15;
+            transition: all 0.2s ease;
+        }
+
+        .bias-label {
+            font-size: 12px;
+            fill: var(--thws-orange);
+            font-weight: 600;
+            text-anchor: middle;
+            dominant-baseline: middle;
+            pointer-events: none;
+        }
+
+        .bias-sublabel {
+            font-size: 10px;
+            fill: var(--text-light);
+            text-anchor: middle;
+            pointer-events: none;
+        }
+
+        /* Hover States */
+        .bias-group:hover .bias-node {
+            fill: var(--thws-orange);
+            stroke: var(--thws-orange);
+            box-shadow: 0 4px 8px rgba(255, 106, 0, 0.2);
+        }
+
+        .bias-group:hover .bias-label,
+        .bias-group:hover .bias-sublabel {
+            fill: #ffffff;
+        }
+
+        .stage-group:hover .stage-rect {
+            stroke: var(--text-dark);
+        }
+
+        /* Details Panel */
+        #details-panel {
+            background: #f9f9f9;
+            border-radius: 6px;
+            padding: 15px;
+            border-left: 3px solid #ccc;
+            min-height: 100px;
+            transition: all 0.3s ease;
+        }
+
+        #details-panel.active {
+            border-left-color: var(--thws-orange);
+            background: #fff5ee;
+        }
+
+        #details-title {
+            margin: 0 0 8px 0;
+            font-size: 1.1rem;
+            color: var(--thws-orange);
+        }
+
+        #details-content {
+            margin: 0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: var(--text-dark);
+        }
+
+        .example-tag {
+            font-weight: 600;
+            color: var(--text-dark);
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="thws-card">
+        <h3>ML Lifecycle: Bias Entry Points</h3>
+        <p class="subtitle">Hover over the orange bias nodes below the main lifecycle stages to explore where and how
+            bias can be introduced into a machine learning system.</p>
+
+        <div class="viz-container">
+            <svg viewBox="0 0 800 380" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#cccccc" />
+                    </marker>
+                    <marker id="arrowhead-orange" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#ff6a00" />
+                    </marker>
+                </defs>
+
+                <g class="stage-group" transform="translate(50, 50)">
+                    <rect class="stage-rect" width="140" height="60"></rect>
+                    <text class="stage-text" x="70" y="30">DATA COLLECTION</text>
+                </g>
+                <path class="connector" d="M190 80 L240 80" />
+
+                <g class="stage-group" transform="translate(240, 50)">
+                    <rect class="stage-rect" width="120" height="60"></rect>
+                    <text class="stage-text" x="60" y="30">TRAINING</text>
+                </g>
+                <path class="connector" d="M360 80 L410 80" />
+
+                <g class="stage-group" transform="translate(410, 50)">
+                    <rect class="stage-rect" width="120" height="60"></rect>
+                    <text class="stage-text" x="60" y="30">TESTING</text>
+                </g>
+                <path class="connector" d="M530 80 L580 80" />
+
+                <g class="stage-group" transform="translate(580, 50)">
+                    <rect class="stage-rect" width="140" height="60"></rect>
+                    <text class="stage-text" x="70" y="30">DEPLOYMENT</text>
+                </g>
+
+                <g class="bias-group" id="bias-preexisting" transform="translate(70, 180)"
+                    onmouseenter="showDetails('preexisting')" onmouseleave="clearDetails()">
+                    <rect class="bias-node" width="100" height="80" x="0" y="0"></rect>
+                    <text class="bias-label" x="50" y="25">Pre-existing Bias</text>
+                    <text class="bias-sublabel" x="50" y="50">Historical,</text>
+                    <text class="bias-sublabel" x="50" y="65">Representation</text>
+                    <path class="connector" d="M120 110 L120 180" stroke-dasharray="3,3" />
+                </g>
+
+                <g class="bias-group" id="bias-technical" transform="translate(250, 180)"
+                    onmouseenter="showDetails('technical')" onmouseleave="clearDetails()">
+                    <rect class="bias-node" width="100" height="80" x="0" y="0"></rect>
+                    <text class="bias-label" x="50" y="25">Technical Bias</text>
+                    <text class="bias-sublabel" x="50" y="50">Proxy Choice,</text>
+                    <text class="bias-sublabel" x="50" y="65">Optimization</text>
+                    <path class="connector" d="M300 110 L300 180" stroke-dasharray="3,3" />
+                </g>
+
+                <g class="bias-group" id="bias-emergent" transform="translate(600, 180)"
+                    onmouseenter="showDetails('emergent')" onmouseleave="clearDetails()">
+                    <rect class="bias-node" width="100" height="80" x="0" y="0"></rect>
+                    <text class="bias-label" x="50" y="25">Emergent Bias</text>
+                    <text class="bias-sublabel" x="50" y="50">Feedback Loops,</text>
+                    <text class="bias-sublabel" x="50" y="65">Context Shift</text>
+                    <path class="connector" d="M650 110 L650 180" stroke-dasharray="3,3" />
+                </g>
+
+                <path class="feedback-connector" d="M650 110 C 650 350, 120 350, 120 115" />
+                <g class="bias-group" id="bias-rlhf" transform="translate(320, 300)" onmouseenter="showDetails('rlhf')"
+                    onmouseleave="clearDetails()">
+                    <rect class="bias-node" width="160" height="40" x="0" y="0" rx="20" style="fill:#fff;"></rect>
+                    <text class="bias-label" x="80" y="20" style="font-size: 11px;">Human Feedback Bias (RLHF)</text>
+                </g>
+
+            </svg>
+        </div>
+
+        <div id="details-panel">
+            <h4 id="details-title">Bias Details</h4>
+            <p id="details-content">Hover over a stage in the diagram to see specific examples of how bias enters the
+                lifecycle.</p>
+        </div>
+
+    </div>
+
+    <script>
+        // Data definitions for the interactive content
+        const biasData = {
+            preexisting: {
+                title: "Pre-existing Bias (Data Collection)",
+                content: "Reflects historical prejudices or skewed sampling in the real world before data is even collected. If the world is biased, the data will be too.<br><br><span class='example-tag'>Example:</span> Amazon's scrapped recruiting tool penalized resumes containing the word 'women's' (e.g., 'women's chess club') because it was trained on 10 years of resumes submitted mostly by men."
+            },
+            technical: {
+                title: "Technical Bias (Training)",
+                content: "Introduced by technical constraints, algorithm design, or feature engineering choices. The model optimizes for a metric that doesn't reflect fairness.<br><br><span class='example-tag'>Example:</span> Using Zip Codes as a feature. While technically neutral, they often act as a 'proxy' for race or socioeconomic status due to historical segregation, leading to redlining in loan algorithms."
+            },
+            emergent: {
+                title: "Emergent Bias (Deployment)",
+                content: "Arises when a system operates in a real-world setting, often due to changing societal norms (context shift) or the system influencing its own future data.<br><br><span class='example-tag'>Example:</span> Predictive policing software sending more patrols to specific neighborhoods based on past arrest data. Increased police presence leads to more recorded arrests, creating a self-fulfilling feedback loop."
+            },
+            rlhf: {
+                title: "Human Feedback Bias (RLHF Loop)",
+                content: "In Reinforcement Learning from Human Feedback, the personal preferences, cultural background, or misunderstandings of the human annotators shape the model's reward mechanism.<br><br><span class='example-tag'>Example:</span> If annotators prefer confident-sounding answers over cautious ones, the model may learn to hallucinate confidently rather than admit uncertainty."
+            }
+        };
+
+        const detailsPanel = document.getElementById('details-panel');
+        const detailsTitle = document.getElementById('details-title');
+        const detailsContent = document.getElementById('details-content');
+        let activeId = null;
+
+        function showDetails(id) {
+            if (!biasData[id]) return;
+            activeId = id;
+            detailsPanel.classList.add('active');
+            detailsTitle.textContent = biasData[id].title;
+            detailsContent.innerHTML = biasData[id].content;
+        }
+
+        function clearDetails() {
+            activeId = null;
+            // Optional: Small delay before clearing to prevent flickering if moving quickly between nodes
+            setTimeout(() => {
+                if (activeId === null) {
+                    detailsPanel.classList.remove('active');
+                    detailsTitle.textContent = "Bias Details";
+                    detailsContent.innerHTML = "Hover over a stage in the diagram to see specific examples of how bias enters the lifecycle.";
+                }
+            }, 100);
+        }
+    </script>
+</body>
+
+</html>

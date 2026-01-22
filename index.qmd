@@ -1,0 +1,150 @@
+# Data Ethics and AI Law
+
+## Why Ethics and Law Belong Together
+
+You're developing an AI system to screen job applications. The algorithm works brilliantly—reducing hiring time by 60%, processing thousands of CVs in minutes. Then two things happen simultaneously:
+
+Your ethics-trained colleague asks: "Does this system discriminate against people with disabilities?" 
+
+Your legal department asks: "Does this comply with GDPR Article 22?"
+
+These aren't separate questions. They're two perspectives on the same problem.
+
+**Algorithmic bias isn't just an ethical failure—it's often a legal violation.** The EU AI Act prohibits emotion recognition in schools. GDPR restricts automated decision-making with significant effects. But beyond legal minimums lies ethical responsibility: Just because something is technically legal doesn't mean it's right.
+
+Conversely, **ethical critique without legal literacy lacks teeth.** Understanding that facial recognition perpetuates racial bias matters more when you know it violates Art. 9 GDPR's restrictions on biometric processing—and that violations carry fines up to €20 million.
+
+This course integrates both dimensions. You'll develop ethical judgment to recognize when AI causes harm, and legal knowledge to understand when harm becomes actionable.
+
+## What You'll Learn
+
+This course combines two complementary modules:
+
+**Module 1: Coded Bias** (Ethics perspective)  
+How discrimination enters AI systems, why marginalized groups—particularly people with disabilities—experience disproportionate harm, and what responsible development requires. You'll analyze real cases (Amazon's recruitment tool, facial recognition failures) and learn to identify bias across the ML lifecycle.
+
+**Module 2: Legal Frameworks** (Regulatory perspective)  
+How GDPR and the EU AI Act regulate AI systems processing personal data. You'll understand legal bases for data processing, prohibited AI practices, high-risk classification, and compliance requirements. You'll apply legal reasoning to ambiguous cases.
+
+**The integration:** Throughout both modules, we demonstrate how ethical principles (fairness, transparency, accountability) map onto legal requirements—and where law falls short of ethical demands.
+
+## Who This Is For
+
+This course assumes no prior technical, legal, or ethical training. We've designed it for interdisciplinary groups:
+
+**Computer Science students** will learn why technical performance metrics don't capture ethical harms, and which legal constraints govern deployment.
+
+**Social Work students** will understand how algorithmic systems encode structural discrimination, and which rights protect vulnerable populations.
+
+**Business students** will recognize compliance obligations, liability risks, and reputational consequences of irresponsible AI development.
+
+**All students** will develop critical perspectives on claims that AI is "objective," "neutral," or "just math."
+
+## How to Use These Materials
+
+### Structure
+
+Each module follows a consistent pattern:
+
+1. **Narrative introduction:** Real cases that illustrate why the topic matters
+2. **Conceptual foundation:** Definitions, frameworks, principles
+3. **Applied analysis:** Detailed examples showing concepts in practice
+4. **Interactive elements:** Exercises that require active engagement
+5. **Reflection:** Questions connecting content to your professional role
+
+### Interactive Elements
+
+You'll encounter several types of embedded activities:
+
+::: {.flip-card}
+#### Flip-Cards
+Click to reveal definitions or explanations. Use these for key concepts you need to retain.
+:::
+
+::: {.case-study}
+#### Case Studies
+Realistic scenarios requiring analysis. Always attempt the problem before revealing the solution.
+:::
+
+::: {.details}
+#### Deep Dives
+Optional supplementary material for students wanting detailed technical or legal explanations.
+:::
+
+### Pacing
+
+**Minimum engagement:** Read the main text, complete case studies, review key takeaways. Estimated time: 3 hours per module.
+
+**Full engagement:** Include all deep dives, attempt all exercises, explore further resources. Estimated time: 5-6 hours per module.
+
+**Iterative approach works best:** Read through quickly for overview, then return to complex sections with focused attention.
+
+### Active Reading Strategies
+
+**Don't just read—interact:**
+
+- **Pause at case studies.** Write out your analysis before checking the solution.
+- **Question claims.** When we assert "X causes Y," ask: What's the evidence? Are there alternative explanations?
+- **Connect to experience.** How does this content relate to technologies you use daily? To your planned profession?
+- **Identify gaps.** What questions remain unanswered? What perspectives are missing?
+
+**For interdisciplinary groups:**
+
+If you're studying in mixed teams (computer science + social work, engineering + policy), assign different students to lead discussions on different sections. Technical students can clarify ML concepts; social science students can contextualize power dynamics; legal students can explain regulatory nuances.
+
+### Assessment Preparation
+
+If you're using these materials for coursework:
+
+- **Key takeaways** at the end of each module summarize essential points
+- **Case studies** model the analytical reasoning expected in assessments
+- **Reflection questions** help you articulate your professional positioning
+- **Further resources** provide starting points for deeper research
+
+### A Note on Tone
+
+You'll notice we write directly, sometimes provocatively. We claim that "this isn't a bug, it's structural discrimination" and that "some systems shouldn't be built." These aren't neutral positions.
+
+**This is intentional.** Ethics and law aren't value-free technical subjects. They concern power, justice, and whose interests matter. We present arguments, not just facts. You're encouraged to disagree—but disagree with evidence and reasoning, not by dismissing normative questions as "subjective."
+
+### Technical Prerequisites
+
+**Minimal:** You should understand what "algorithm," "data," and "prediction" mean at a basic level.
+
+**Helpful but not required:** Familiarity with machine learning concepts (training data, accuracy, bias-variance tradeoff) will make technical sections clearer, but we explain core concepts from first principles.
+
+**Legal background:** Not assumed. We introduce GDPR and AI Act provisions in accessible language before applying them.
+
+## Navigation
+
+**Module 1: Coded Bias** begins with Sarah's story—an automated rejection that reveals how disability discrimination gets encoded into hiring algorithms.
+
+**Module 2: Legal Frameworks** begins with Maria's complaint—a regulatory enforcement action that reveals how GDPR protects individuals against algorithmic harms.
+
+**Read in sequence** if you're new to both topics. The ethics module builds intuitions that make legal principles more concrete.
+
+**Start with Module 2** if you have ethics training but need regulatory literacy.
+
+**Start with Module 1** if you understand legal frameworks but lack critical perspectives on algorithmic bias.
+
+Both modules stand alone but reinforce each other. Cross-references throughout indicate connections.
+
+## Your Responsibility
+
+By the end of this course, you'll know:
+
+- How bias enters AI systems (ethics)
+- When bias violates legal requirements (law)
+- What alternatives exist (practice)
+
+**What you do with that knowledge matters.**
+
+If you build systems that discriminate, you cannot claim ignorance. If you deploy systems that violate GDPR or the AI Act, you cannot claim you were "just following specifications." If you work in organizations using algorithmic decision-making, you cannot claim it's "not your problem."
+
+Professional competence demands ethical judgment and legal literacy. This course provides both.
+
+**The goal isn't just knowledge—it's accountability.**
+
+---
+
+**Ready?** Let's begin with the ethics module: *Coded Bias: When Algorithms Learn Our Prejudices*.

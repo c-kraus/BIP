@@ -1,0 +1,42 @@
+project:
+  type: book
+  output-dir: _site
+
+number-sections: true
+
+book:
+  title: "Data Ethics and AI Law"
+  subtitle: "An Integrated Approach to Bias and Regulation"
+  author:
+  - name: Christian Kraus
+    email: christian.kraus@thws.de
+    role: Professor Accounting & Business Ethics
+    affiliation: THWS FWI
+  - name: Markus Oermann
+    email: markus.oermann@thws.de
+    role: Professor Digital Ethics and Media Law
+    affiliation: THWS FIW
+  date: "last-modified"
+  chapters:
+    - index.qmd
+    - introbip.qmd
+    - legal-frameworks-ai.qmd
+    - conclusion.qmd
+    
+  
+  # Navigation & Suche
+  sidebar:
+    style: "docked"
+    background: light # Passt gut zu deinem thws-grey/orange
+    collapse-level: 1
+    search: true
+  repo-url: https://github.com/c-kraus/BIP
+  repo-actions: [issue]
+  
+format:
+  moodle-html
+
+# Globale Optionen für Code-Zellen (Tech-Stack)
+execute:
+  echo: false
+  warning: false

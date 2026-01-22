@@ -1,0 +1,1239 @@
+# Coded Bias: When Algorithms Learn Our Prejudices
+
+## When Sarah Got the Rejection
+
+Sarah stares at her laptop screen, reading the automated email for the third time. "Unfortunately, we must inform you that your profile does not meet our requirements." Forty-eight seconds. That's how long it took an algorithm to reject her application—faster than any human could have read her CV.
+
+What the email doesn't say: Sarah has a bachelor's in social work with a 1.3 GPA. She speaks three languages fluently. She served two years as student body representative. But her CV also mentions that she chaired the university's disability rights student group. That she took a semester off when her chronic illness required inpatient treatment. That she worked part-time during her studies, not full-time, because more wasn't physically possible.
+
+The algorithm read this as "employment gap" and "part-time work history." It was trained on CVs of people who never had to pause, never had to work reduced hours, never participated in disability advocacy. It learned that "standard biography" means: no gaps, no disability, no complications.
+
+**Sarah doesn't know an algorithm rejected her. She thinks she simply wasn't good enough.**
+
+
+```{=html}
+<iframe src="widgets/rejection.html" 
+        style="width: 100%; height: 930px; border: none;">
+</iframe>
+``` 
+
+
+
+---
+
+## Why This Isn't Just Sarah's Problem
+
+Maybe you're a social work student thinking: "These are exactly the cases I'll support later." Or you're studying computer science thinking: "I would never build a system like that." Both perspectives matter—and both aren't enough.
+
+Because these systems already exist. They decide who gets invited to job interviews, who receives credit, which neighborhoods experience heavier policing, who sees which advertisements, who gets flagged as "at risk." And they make these decisions millions of times daily, without those affected even noticing.
+
+Researcher Joy Buolamwini put it this way: "The danger of AI is not that it will become evil, but that it will amplify human bias." Her own story illustrates this: As a student at MIT, she worked with facial recognition software that couldn't detect her face—only when she wore a white mask. The system had been trained on white faces. For dark-skinned women, the error rate was 35%. For light-skinned men, under 1%.
+
+This isn't a bug in the code. This is structural discrimination, translated into mathematics.
+
+---
+
+## What You'll Learn in This Chapter
+
+We'll understand together **how** prejudices enter AI systems, **why** this particularly affects people with disabilities and other marginalized groups, and **what** you—as future social workers and computer scientists—can do about it.
+
+You'll learn to:
+- Recognize the four pathways through which discrimination gets built into algorithms
+- Analyze concrete examples (from Amazon to facial recognition)
+- Understand why "more data" doesn't solve the problem
+- Judge when technology helps and when it harms
+- Develop practical strategies to demand or build fair systems in your future professional field
+
+---
+
+## What Is "Algorithmic Bias" Anyway?
+
+Imagine you're a tutor in academic advising. Each semester, 500 first-year students need support. You can't possibly advise all of them intensively, so you develop a system: Anyone who misses more than three lectures in the first four weeks automatically gets invited to a counseling session.
+
+Sounds fair. But then you notice: Students with disabilities are absent more often—not because they're unmotivated, but because buildings aren't accessible, because instructors don't provide recordings, because chronic illnesses have flare-ups. Your "objective" criterion systematically flags the wrong people.
+
+This is **algorithmic bias**: A systematic, repeatable unfairness in a computerized system that disadvantages certain groups.
+
+Three characteristics define it:
+1. **Systematic**: not random, but structured along dimensions like disability, gender, origin
+2. **Repeatable**: happens again and again, every time
+3. **Sociotechnical**: emerges from the interplay of technology and society
+
+The crucial point: It's not a bug. It's not an accident. It's the logical consequence of feeding systems discriminatory data or translating discriminatory assumptions into code.
+
+::: {.details}
+#### For Computer Science Students: The Four Phases of the ML Lifecycle
+
+A comprehensive study analyzing 328 research papers (Hickman et al., 2024) shows exactly where bias enters machine learning:
+
+**Phase 1: Collecting Data**
+- **Representation bias**: Wheelchair users comprise <0.1% of images in ImageNet
+- **Historical bias**: People with disabilities are underrepresented in employment data because they were discriminated against
+- **Measurement bias**: Labels like "productive" or "reliable" don't measure objective truth, but societal prejudices
+
+**Phase 2: Training the Model**
+- **Aggregation bias**: One model for everyone works well for the majority, poorly for minorities
+- **Learning bias**: Optimization maximizes accuracy for the largest group
+- **Hyperparameter effects**: Regularization prevents overfitting—but "overfitting" on minorities is often necessary to recognize them at all
+
+**Phase 3: Testing the Model**
+- Test data mirrors training data → bias remains invisible
+- No stratification by protected attributes
+
+**Phase 4: Deploying the Model**
+- **Emergent bias**: Context shifts (training: lab, deployment: real world)
+- **Feedback loops**: Biased outputs become new training data
+
+A meta-analysis of 150 fairness studies (IEEE, 2024): 23% bias reduction costs an average of 9% accuracy. That's not a technical limit—that's a value judgment.
+:::
+
+::: {.details}
+#### For Social Work Students: Why People with Disabilities Are Invisible
+
+Only 2% of all publicly available AI datasets contain data from people with disabilities. Why?
+
+**Structural Exclusions:**
+- Smaller populations → less "incidental" data production
+- Specialized knowledge needed to annotate data correctly (e.g., sign language variants)
+- Privacy concerns with sensitive medical information
+- Digital platforms are designed for non-disabled people → those who can't participate don't produce data
+
+**Consequences:**
+- Facial recognition fails with wheelchair-mounted headrests
+- Speech recognition rejects non-standardized speech patterns
+- Application algorithms penalize disability-related achievements
+- Health AI learns "normal" = "not disabled"
+
+You know this from social work: Those who don't appear in statistics don't receive resources. With AI, the same applies—just automated and at scale.
+:::
+
+---
+
+## How Discrimination Enters AI: Four Stories
+
+### Story 1: When Amazon Trained an Algorithm Against Women
+
+**2014, Amazon headquarters, Seattle.** The recruiting team has a problem: 50,000 applications per year, far too many for manual screening. A team of developers builds a solution: An AI system that scans CVs and identifies the best candidates.
+
+The idea: Let the algorithm learn from the last 10 years of hiring decisions. If we hired good people, the algorithm will learn what "good" means.
+
+**The problem:** The last 10 years were dominated by male applicants, especially in tech roles. The system learns: "being male" correlates with "getting hired."
+
+**The result:** The algorithm penalizes CVs containing the word "women's"—"women's chess club," "women's college." It learns that men are preferred and reproduces that. Amazon retrains the system multiple times. Each time it learns the same discrimination. In 2018, they cancel the project.
+
+**This is pre-existing bias**: The algorithm inherits prejudices from historical data.
+
+---
+
+### Story 2: When ChatGPT Sorted Out Applications from People with Disabilities
+
+**2024, a research lab.** Scientists want to know: How does GPT-4 behave when it sees applications from people with disabilities?
+
+They create identical CVs—same grades, same qualifications. The difference: One set lists disability-related activities:
+- Board member of a disability rights organization
+- Scholarship for students with disabilities
+- Presentation at an accessibility conference
+
+**The result:** GPT-4 systematically ranks applications with disability indicators lower.
+
+The researchers analyze GPT-4's reasoning. They find two patterns:
+
+**Direct ableism**: "The applicant might have difficulty handling a stressful work environment."
+
+**Indirect ableism**: "The activities show engagement in niche topics, but not in core business."
+
+This is the same logic you know from discriminatory job interviews—just automated and with the appearance of objectivity.
+
+::: {.case-study}
+#### Exercise: Analyzing Sarah's Case
+
+Remember Sarah from the beginning. Her CV gets sorted out by an AI system because she:
+- Took a semester off (for inpatient treatment)
+- Worked part-time (because chronic illness made full-time impossible)
+- Was active in a disability rights group
+
+**Question 1 (for everyone):** What type of bias is present here?
+- [ ] Pre-existing bias (historical data)
+- [ ] Technical bias (design decisions)
+- [ ] Emergent bias (context shift)
+- [ ] Multiple simultaneously
+
+**Question 2 (for social work):** You work in a counseling center. Sarah comes to you and tells you she's written 40 applications, always automatically rejected. What do you advise?
+
+**Question 3 (for computer science):** You're part of the team that built this algorithm. During an audit, you discover: People with disabilities have 60% fewer chances of getting an interview. How do you react?
+
+::: {.solution}
+**Answer 1:** Multiple simultaneously. **Pre-existing bias** (the system learned from data where people with disabilities were underrepresented) + **Technical bias** (choosing "employment gap" as a negative signal ignores structural reasons).
+
+**Answer 2 (Social Work):**
+- Short-term: Recommend alternative application routes (personal networks, job fairs, smaller organizations without AI screening)
+- Medium-term: Document the case. Repeated discrimination through AI systems could be legally relevant (EU AI Act, anti-discrimination law)
+- Long-term: Connect her with support groups; collective advocacy is more effective than individual complaints
+
+**Answer 3 (Computer Science):**
+- **Immediately:** Escalate to management. This isn't just ethically problematic, it's legally risky in the EU (AI Act: High-Risk System without fairness assessment)
+- **Technically:** Demand disaggregated evaluation (metrics separated by disability status). "Average accuracy" masks subgroup failures
+- **Structurally:** Question whether AI is even the right solution when historical data is discriminatory. Perhaps human screening is needed for all applications with recognizable disability indicators
+:::
+:::
+
+---
+
+### Story 3: When a Healthcare Algorithm Ignored Black Patients
+
+**USA, 2019.** An algorithm is deployed in hospitals to decide who needs additional medical care. Sicker patients → higher costs → higher priority. Sounds logical.
+
+**The problem:** Black patients in the USA have worse access to healthcare due to structural barriers. Same illness → lower costs (because fewer treatments). The algorithm interprets this as "less sick."
+
+**The result:** 50% fewer Black patients are flagged for additional care, even though they're medically just as needy as white patients.
+
+**This is technical bias**: The choice of a proxy (cost for need) encodes structural discrimination.
+
+---
+
+**Now applied to disability:**
+
+Lisa is 28, has multiple sclerosis. Her condition progresses in episodes—sometimes she's fine, sometimes she needs intensive support. An algorithm decides who gets access to an expensive new therapy program.
+
+The algorithm uses "past healthcare spending" as a proxy for "severity of illness." But Lisa has spent little money on therapy in the last two years—not because she wasn't sick, but because her insurance denied claims, because she couldn't afford copays, because the nearest specialized practice is 80 kilometers away.
+
+The algorithm sees: low costs = not severely ill = no priority.
+
+::: {.details}
+#### For Computer Science: The Proxy Problem Formalized
+
+A proxy $P$ stands in for a target $T$ that we can't measure directly:
+
+$$\hat{T} = f(P, X)$$
+
+**The problem:** When the correlation $\text{Cov}(P, T)$ differs between groups, the proxy fails.
+
+**Healthcare example:**
+- Group A (good access): Cost ≈ Need (strong correlation)
+- Group B (poor access): Cost ≪ Need (weak correlation)
+
+The model optimizes for $\mathbb{E}[\text{Cost}]$ as if Cost = Need. This only holds for Group A.
+
+**Disability-specific proxies you must question:**
+- Employment history as proxy for competence (ignores discrimination)
+- Healthcare spending as proxy for need (ignores access barriers)
+- Educational attainment as proxy for intelligence (ignores lack of accommodations)
+- Speech fluency as proxy for comprehension (ignores communicative diversity)
+
+**The question is never:** "Does P correlate with T?" **The question is:** "Does P correlate *equally across all groups* with T?"
+:::
+
+---
+
+### Story 4: When Speech Recognition Rejected a Deaf Applicant
+
+**2023, Canada.** A deaf Indigenous woman applies for customer service positions. The companies use automated video interview systems: Applicants answer questions on camera, an AI analyzes speech, word choice, fluency.
+
+The system was trained on Standard American English. Her speech—shaped by a different accent structure and communicative characteristics of deaf people—is interpreted as "not fluent."
+
+**The result:** Automatic rejection. The system was never designed to understand her speech. It encounters a context it wasn't trained for.
+
+**This is emergent bias**: A system that seemed fair in one context fails in another.
+
+---
+
+**Another version of the same story:**
+
+A study tests speech recognition systems (2024). Result: Error rates for deaf speakers are 3-5x higher than for hearing speakers—even when the speech is comprehensible to humans.
+
+Now imagine these systems are deployed for:
+- Job interviews (as above)
+- Access to telephone emergency services
+- Voice-controlled assistive systems in smart homes
+- Exams with oral components
+
+Those excluded by this system aren't marked as "discriminated against." They simply fail. Invisibly.
+
+---
+
+### Interim Conclusion: Recognizing the Pattern
+
+Four stories, four different mechanisms:
+1. **Pre-existing bias**: Amazon learns from sexist hiring data
+2. **Pre-existing + Technical bias**: GPT-4 reproduces ableism from internet data + is poorly tuned
+3. **Technical bias**: Healthcare algorithm chooses the wrong proxy
+4. **Emergent bias**: Speech recognition fails with unexpected speakers
+
+But a common principle: **The system reproduces and amplifies existing inequalities.**
+
+
+::: {.content-visible when-format="html"}
+<iframe src="widgets/rejection.html" 
+        style="width: 100%; height: 750px; border: none;" 
+        loading="lazy">
+</iframe>
+
+:::
+---
+
+## When AI Couldn't See Your Face
+
+**Boston, 2016.** Joy Buolamwini, a graduate student at MIT, is working on a robotics project. She needs facial recognition software to detect when she's in front of the camera. She runs the code.
+
+Nothing happens.
+
+She moves closer. Adjusts the lighting. Tries different angles. The system doesn't recognize her face. Frustrated, she grabs a white Halloween mask from a drawer and holds it in front of her face.
+
+The system instantly detects her.
+
+**She's a Black woman. The algorithm was trained almost exclusively on white faces.**
+
+This moment changed her life. She founded the Algorithmic Justice League and conducted the Gender Shades study—testing commercial facial recognition systems from IBM, Microsoft, and Face++. The results:
+
+| Group | Error Rate |
+|-------|------------|
+| Light-skinned males | 0.8% |
+| Dark-skinned females | 34.7% |
+
+A forty-fold difference. These aren't experimental systems in a lab—these are products deployed in airports, police stations, border controls, and workplaces worldwide.
+
+::: {.case-study}
+#### Your University Installs Facial Recognition
+
+Your university announces a new security system: Facial recognition cameras at all building entrances. The goal: Improve campus safety, track attendance automatically, identify unauthorized persons.
+
+The administration emphasizes: "This is state-of-the-art technology. Very accurate. Very safe."
+
+**What they don't mention:**
+- The system was tested primarily on white students
+- Students who wear hijabs experience 3x higher error rates
+- Students with facial differences (scars, birthmarks, asymmetries) get flagged as "not recognized" and must use alternative entry methods
+- The data is stored for 10 years, accessible to campus police and potentially external authorities
+
+**Week 3:** A Black student with vitiligo (skin condition causing pigmentation changes) is denied entry to the library three times. Each time, security personnel are called. Each time, she must show ID manually. She starts avoiding the library.
+
+**Week 5:** A student with social anxiety disorder finds out the system logs not just *when* you enter buildings, but *how often*. Counseling services access this data to identify "at-risk" students. She's called in for a "wellness check" because she "isolates herself" (translation: she studies in her dorm instead of campus libraries).
+
+**Questions for Discussion:**
+
+*For Social Work Students:*
+- What rights violations do you see here?
+- How would you support the student with vitiligo?
+- What's the difference between "wellness check" and surveillance?
+
+*For Computer Science Students:*
+- How would you test this system before deployment?
+- What accuracy threshold is acceptable when false positives mean students can't access buildings?
+- Can this system ever be "fair" if training data is biased?
+
+*For Everyone:*
+- Who benefits from this technology?
+- Who bears the costs?
+- What alternatives exist for the stated goal (campus safety)?
+
+::: {.solution}
+**Analysis:**
+
+**This combines multiple bias types:**
+- **Pre-existing bias**: Training data overrepresents white faces, underrepresents hijab-wearing students, excludes facial differences
+- **Technical bias**: The system conflates "security" with "identification," ignoring that exclusion itself creates insecurity for affected students
+- **Emergent bias**: Deployed in a context (diverse university) different from training environment
+
+**Social Work Perspective:**
+The student with vitiligo experiences **dignity harm** (repeated public flagging) and **access harm** (can't use library freely). This isn't a technical glitch—it's structural discrimination. Your role: Document incidents, connect her with disability services, advocate for policy change.
+
+The "wellness check" illustrates **function creep**: A security system becomes a mental health surveillance tool. This violates therapeutic trust and informed consent principles.
+
+**Computer Science Perspective:**
+The system should never have been deployed without:
+- Disaggregated testing across skin tones, head coverings, facial characteristics
+- Explicit informed consent for secondary data use
+- Regular audits with results made public
+- A shutdown mechanism when error rates exceed thresholds
+
+**Better alternative:** Instead of facial recognition, invest in:
+- Better lighting and staffing for entrances
+- Student ID cards with QR codes (low-tech, inclusive)
+- Community-building initiatives that actually improve safety through relationships, not surveillance
+:::
+:::
+
+---
+
+## When "Personalized Learning" Becomes a Sorting Machine
+
+**Meet Alex and Jordan, both first-year computer science students.**
+
+**Alex** grew up in a well-resourced school district. Had access to coding camps since age 12. Parents could afford SAT prep. Enters university with strong programming fundamentals.
+
+**Jordan** grew up in a rural area. School had no computer science courses. First touched code at 18. Works 20 hours/week to afford tuition. Has ADHD and uses accommodations.
+
+Your university introduces an "AI-powered adaptive learning platform" for the introductory programming course. The marketing promises: "Personalized education! Each student learns at their own pace!"
+
+**How it works:**
+- Students complete coding exercises
+- AI tracks time spent, error patterns, help requests, completion rates
+- System "adapts" difficulty based on performance
+- Generates a "risk score" predicting who will drop out
+
+**Week 4 results:**
+
+**Alex:**
+- Completes exercises quickly
+- Low error rate
+- Risk score: 15% (green)
+- System recommendation: "Accelerated track"
+
+**Jordan:**
+- Takes longer (works evenings, ADHD means breaks needed)
+- Higher error rate (new to programming)
+- Requests more hints
+- Risk score: 78% (red)
+- System recommendation: "Consider introductory pre-course" (which costs extra money and delays graduation by a semester)
+
+**What the AI doesn't know:**
+- Alex's 8 years of head start
+- Jordan's work schedule
+- That "time spent" correlates with socioeconomic background, not potential
+- That error patterns in Week 4 don't predict success in Week 40
+
+**The outcome:** Jordan receives an automated email from academic advising suggesting he "reconsider whether computer science is the right fit." He drops out. The AI's prediction becomes self-fulfilling.
+
+::: {.details}
+#### For Computer Science Students: The Feedback Loop Problem
+
+This is a textbook feedback loop:
+
+**Cycle 1:** AI trained on past student data (which already reflects inequality—students like Alex overrepresented among "successful" completers)
+
+**Cycle 2:** AI predicts Jordan is "at risk" based on features that correlate with socioeconomic disadvantage, not actual potential
+
+**Cycle 3:** Jordan receives discouraging messages, less support, gets tracked into remedial courses
+
+**Cycle 4:** Jordan drops out (or succeeds despite obstacles, but later and with more debt)
+
+**Cycle 5:** New training data confirms AI's "accuracy": Students flagged as high-risk did indeed drop out more often
+
+**Mathematical representation:**
+
+Let $P_t$ = resources allocated to student at time $t$  
+Let $S_t$ = success metrics (grades, completion)  
+Let $R_{t+1}$ = predicted risk score
+
+The system learns: $R_{t+1} = f(S_t, P_t, \ldots)$
+
+But if $S_t$ depends on $P_t$ (more resources → better outcomes), and $P_{t+1}$ depends on $R_{t+1}$ (high risk → fewer resources), you get:
+
+$$P_{t+1} \propto \frac{1}{R_{t+1}} \propto \frac{1}{f(S_t)} \propto \frac{1}{g(P_t)}$$
+
+Students who start with fewer resources ($P_0$ low) receive less support going forward, ensuring continued poor outcomes. The algorithm doesn't predict failure—it *causes* it.
+
+**How to break the loop:**
+- Decouple prediction from resource allocation (use AI for diagnosis only, never for gatekeeping)
+- Invert the logic: Highest-risk students receive *most* resources
+- Audit for disparate impact across protected groups
+- Question whether predictive risk scoring should exist at all in educational contexts
+:::
+
+::: {.details}
+#### For Social Work Students: When "Data-Driven" Means "Discrimination-Driven"
+
+You recognize this pattern. It's the same logic as:
+
+**Child welfare risk assessments** that flag poverty as "neglect risk"—then use high risk scores to justify removing children, which "proves" the algorithm was right.
+
+**Recidivism prediction tools** that score Black defendants as higher risk—then use those scores to deny bail, leading to worse legal outcomes, which "proves" they were indeed risky.
+
+**Housing algorithms** that deny rentals to people with eviction records—caused by landlords who evicted tenants for requesting disability accommodations.
+
+The pattern: **Systemic disadvantage → algorithmic flag → reduced opportunity → worse outcome → "validated" algorithm.**
+
+Your professional role includes:
+1. **Advocacy**: Challenge institutions using AI to sort rather than support
+2. **Documentation**: Track cases where algorithmic decisions harm clients
+3. **Education**: Help clients understand they're facing systemic bias, not personal failure
+4. **Coalition-building**: Connect affected students/clients for collective action
+
+The AI isn't neutral. It's a political tool that can either reinforce or challenge inequality—depending on who controls it and for what purpose.
+:::
+
+---
+
+## When Generative AI Erases Your Disability
+
+**2022, Lensa AI launches.** It's an app that turns your selfies into artistic avatars using generative AI. Social media explodes with people sharing their AI-generated portraits—fantasy warriors, ethereal fairies, professional headshots.
+
+**Then disabled users start noticing something.**
+
+Upload a photo in a wheelchair? The AI generates you standing.  
+Upload a photo with a prosthetic limb? The AI "corrects" it to a biological limb.  
+Upload a photo with facial differences? The AI smooths them out.
+
+**The AI learned that "beautiful" and "professional" mean "not disabled."**
+
+This isn't malice. It's mathematics. The model was trained on billions of internet images where:
+- Stock photos of "success" show non-disabled people
+- Magazine covers feature able-bodied models
+- "Before/after" medical imagery frames disability as problem to solve
+
+The AI learned: Disability = aesthetic flaw. So it "fixes" it.
+
+---
+
+**A parallel story: DALL-E and occupational stereotypes.**
+
+A 2024 study tested text-to-image AI across occupations. Prompt: "Generate an image of a [occupation]."
+
+**Results:**
+- "Engineer" → 94% white men
+- "Nurse" → 87% white women
+- "CEO" → 99% non-disabled
+- "Social worker" → 78% women, 3% visible disabilities
+
+Now add disability to the prompt: "Engineer with disability."
+
+**What the AI generates:**
+- Person in wheelchair... as *client* being helped by an engineer
+- Person with prosthetic... in a *medical* context, not professional
+- Person with Down syndrome... in *special education* setting, not workplace
+
+The AI can't imagine disabled people as professionals. It places them in service-recipient roles.
+
+::: {.case-study}
+#### Exercise: Audit Generative AI
+
+**Part 1: Image Generation**
+
+Use DALL-E, Stable Diffusion, or similar. Generate images for these prompts:
+1. "University professor"
+2. "Software developer"
+3. "Successful entrepreneur"
+4. "Medical doctor"
+
+Count: How many show visible disabilities? What's the race/gender distribution?
+
+Now modify: "University professor who uses a wheelchair"
+
+What changes? Is the wheelchair shown? How is the person depicted?
+
+**Part 2: Text Generation**
+
+Ask ChatGPT or similar: "Write a professional bio for a software engineer."
+
+Then: "Write a professional bio for a software engineer with autism."
+
+Compare:
+- Is disability mentioned in the first? (Probably not)
+- How is disability framed in the second? (Medical? Inspirational? Challenge-to-overcome?)
+- Would you hire the person from bio #1 vs #2?
+
+**Part 3: Reflection**
+
+*For everyone:* What assumptions do these outputs reveal? Where did the AI learn them?
+
+*For Computer Science:* How would you build a system that doesn't erase disability or default to stereotypes?
+
+*For Social Work:* If a client came to you distressed because an AI app "corrected" their disability in generated images, how would you respond?
+
+::: {.solution}
+**What you'll likely find:**
+
+**Image generation:**
+- Baseline prompts generate <5% visible disabilities
+- When disability is specified, it often becomes the primary visual focus (person defined by wheelchair, not by profession)
+- Intersectional prompts ("Black woman engineer with disability") may fail entirely or generate nonsensical combinations
+
+**Text generation:**
+- Disability-neutral bios focus on skills and achievements
+- Disability-explicit bios often include:
+  - Inspirational framing ("Despite challenges...")
+  - Medical details irrelevant to job performance
+  - Emphasis on "overcoming" rather than accommodation
+  - Implicit suggestion that disability is noteworthy, not normal
+
+**Why this happens:**
+- Training data reflects ableist culture
+- "Professional" images in datasets exclude disabled people
+- "Success stories" about disabled people frame disability as obstacle, not identity
+- No counterbalance in RLHF (human feedback training) because disabled people are underrepresented among annotators
+
+**Computer Science response:**
+Building non-ableist systems requires:
+- Deliberately diverse training data (not just "more data")
+- Evaluation metrics that test for stereotype reproduction
+- Disabled people on design and testing teams
+- Questioning whether some applications (e.g., "beautification" filters) should exist at all
+
+**Social Work response:**
+Validate your client's experience: "This isn't about you. The AI learned from a world that devalues disability." Then:
+- Explore how this connects to other experiences of erasure/invisibility
+- Consider advocacy: Report to app developers, share experience publicly
+- Build resilience: "The AI's 'normal' isn't the only valid existence"
+:::
+:::
+
+---
+
+## When AI Could Have Helped—But Didn't
+
+So far, we've focused on harms. But AI isn't inherently oppressive. When designed inclusively, it can reduce barriers that exclusionary societies create.
+
+**Three stories of AI enabling access:**
+
+### Story 1: Sign Language Recognition Done Right
+
+**2025, a research team in Malaysia** develops AI to translate Quranic recitation into sign language for deaf Muslims. This could have gone terribly wrong—religious content, sensitive cultural context, complex linguistic nuances.
+
+**What they did differently:**
+- Engaged deaf educators from the beginning, not as test subjects but as co-designers
+- Involved Islamic scholars to ensure theological appropriateness
+- Tested across regional sign language variations (Arabic Sign Language isn't universal)
+- Prioritized accuracy for the community over speed-to-market
+
+**Result:** 98% accuracy. But more importantly: a system that deaf Muslim communities actually wanted and trusted, because they helped build it.
+
+**Contrast this with:** Most sign language recognition research, which treats deaf people as problems to solve rather than experts to consult.
+
+---
+
+### Story 2: When AI Described the World
+
+**Microsoft's Seeing AI app** uses computer vision to narrate visual environments for blind users. Point your phone at:
+- A document → It reads the text aloud
+- A person → It describes facial expressions, estimated age
+- A scene → It describes objects, spatial relationships
+- A product barcode → It identifies the item
+
+**Why this works:**
+- Addresses real need identified by blind users
+- User controls when/how it's used (consent)
+- Augments human capability without replacement
+- Continuously improved based on user feedback
+
+**But:** Even this has limitations. The AI sometimes misidentifies race (trained on biased facial datasets). It assumes binary gender. It describes disabled people using medical language ("person in wheelchair") rather than identity-first language ("wheelchair user").
+
+No system is perfect. The question is: Who has power to shape it?
+
+---
+
+### Story 3: When Predictive Text Gave Voice
+
+**Augmentative and Alternative Communication (AAC) devices** help non-speaking people communicate. Modern versions use AI to predict word sequences, dramatically reducing keystrokes needed.
+
+**Traditional device:** To type "I want to go to the library," might require 30+ key presses.
+
+**AI-powered device:** After "I want," the system predicts high-probability next words. Reduces to 8-12 key presses.
+
+For someone with limited motor control, this is transformative. It's the difference between participating in real-time conversation and being left out because typing is too slow.
+
+**But:** These systems learn from each user's language patterns. If a user's vocabulary is limited due to educational exclusion, the AI reinforces that limitation rather than expanding it. If training data is biased (most AAC data comes from children, not adults), adult users get child-appropriate predictions.
+
+Again: The technology has potential. The question is implementation.
+
+::: {.flip-card}
+#### The Dual Nature of Assistive AI
+
+**Front:** Can the same technology liberate and oppress?
+
+**Back:** Yes. The difference isn't in the technology itself, but in **purpose** and **power**.
+
+**Liberatory use:**
+- Controlled by user
+- Data stays private
+- Goal: Remove barriers to user's own objectives
+- User can refuse/disable
+
+**Oppressive use:**
+- Controlled by institution
+- Data shared with gatekeepers
+- Goal: Sort, predict, manage
+- User cannot opt out without losing access
+
+Example: An adaptive learning platform that helps you study vs. one that labels you "at risk" and shares that with administration. Same technology. Opposite impacts.
+:::
+
+---
+
+## The Alignment Problem: Whose Values Are "Human" Values?
+
+Here's an uncomfortable question: When AI companies say they're "aligning" their models with "human values," **which humans** are they talking about?
+
+**The process:** Companies like OpenAI use "Reinforcement Learning from Human Feedback" (RLHF). Thousands of workers—primarily in the Global South, paid $2-6/hour—label AI outputs as helpful/harmful, appropriate/inappropriate.
+
+**Their judgments become the model's values.**
+
+But "helpful" to whom? "Appropriate" in which cultural context?
+
+**Example 1:** An AI trained to be "polite" learns Western norms of directness and individual autonomy. In cultures that value collective harmony and indirect communication, it seems rude.
+
+**Example 2:** An AI trained to avoid "harmful medical advice" refuses to discuss harm reduction strategies for drug use—information that could save lives, deemed "inappropriate" by annotators unfamiliar with public health frameworks.
+
+**Example 3 (disability-specific):** An AI trained to promote "independence" as the highest good dismisses requests for community support or interdependence—reflecting ableist assumptions that needing help is failure.
+
+**The deeper issue:** Most AI ethics frameworks assume Western liberal values—autonomy, transparency, individual rights—are universal. They aren't.
+
+- Some cultures prioritize collective welfare over individual choice
+- Some ethical traditions emphasize care relationships over rights
+- Some communities value contextual judgment over rigid rules
+
+**For disability:** The disability rights movement asserts "Nothing About Us Without Us"—decisions affecting disabled people must involve disabled people. Yet AI systems making decisions about disability accommodations, healthcare rationing, accessibility features are designed predominantly by non-disabled engineers in California.
+
+Brian Christian calls this the "alignment problem": We're building systems and claiming they're aligned—**to whose values?**
+
+::: {.details}
+#### For Social Work Students: The Medical vs. Social Model in AI
+
+Most AI systems implicitly encode the **medical model** of disability:
+
+**Medical Model:**
+- Disability is a deficit in the individual
+- Goal: Fix, cure, normalize
+- AI application: Help disabled people become more "normal"
+- Example: Speech recognition that trains users to speak "more clearly" (closer to standard English)
+
+**Social Model:**
+- Disability results from societal failure to accommodate diversity
+- Goal: Remove barriers, enable participation
+- AI application: Adapt systems to diverse human needs
+- Example: Speech recognition that learns to understand diverse speech patterns
+
+**Why this matters:** If you're working with clients who use AI-powered services, ask:
+- Does this technology ask the client to change, or does it adapt to them?
+- Who decided what counts as "normal" or "functional"?
+- Is the goal empowerment or assimilation?
+
+These aren't technical questions. They're political ones—and social workers are trained to ask them.
+:::
+
+---
+
+## Explainability: When Transparency Isn't Enough
+
+**You're a case manager. You receive an algorithmic risk score for one of your clients.**
+
+The report says: "Risk of homelessness: 87%. High priority for intervention."
+
+You ask: "Why is the score so high?"
+
+The system provides an explanation:
+- Employment history: -35 points
+- Housing stability: -25 points
+- Healthcare utilization: -15 points
+- Social support network: -12 points
+
+This is **explainable AI**. You can see which factors drove the decision. The system used SHAP (SHapley Additive exPlanations)—a mathematically rigorous method that attributes influence to each factor.
+
+**But here's what the explanation doesn't tell you:**
+
+- Your client has an "unstable employment history" because employers discriminated against their disability
+- They have "low housing stability" because landlords refused to install accessibility modifications
+- They have "high healthcare utilization" not because they're sicker, but because navigating healthcare with a disability requires more appointments
+- They have a "weak social support network" because poverty and disability limit transportation to maintain relationships
+
+**The algorithm is transparent. You can see exactly why it made the decision. But the transparency reveals discrimination, it doesn't prevent it.**
+
+This is the fundamental problem with explainable AI: Understanding ≠ justice.
+
+::: {.case-study}
+#### Exercise: The Child Welfare Algorithm
+
+**Scenario:**
+
+You're a social worker in child protective services. Your agency has implemented the "Family Risk Assessment Tool"—an AI that predicts which families reported for potential maltreatment warrant investigation.
+
+**Case:** Maria, a single mother with an intellectual disability, is reported by her child's teacher for "concerning behavior"—her 7-year-old came to school in slightly dirty clothes twice last week.
+
+The algorithm assigns a risk score: 76% (high).
+
+You request an explanation. The SHAP output shows:
+
+```
+Base rate (average risk): 35%
+
+Contributing factors:
++ Parent cognitive assessment score    +18%
++ Medicaid enrollment                  +12%
++ Single-parent household              +8%
++ Previous CPS contact                 +3%
+= Final prediction: 76%
+```
+
+**The explanation seems clear. But consider:**
+
+- "Cognitive assessment score" is a proxy for intelligence, which is culturally biased and a poor predictor of parenting capability
+- "Medicaid enrollment" is a proxy for poverty, not neglect
+- "Single-parent household" reflects family structure, not safety
+- "Previous CPS contact" was a false report that was dismissed—but it's still in the system
+
+**Questions:**
+
+*For Social Work:*
+1. Does this explanation help you make a better decision?
+2. What's missing from the algorithmic assessment that you would consider?
+3. If the algorithm recommends investigation and you disagree, what do you do?
+
+*For Computer Science:*
+1. Are these legitimate predictive features, or are they proxies for structural disadvantage?
+2. How would you test whether the model discriminates against parents with disabilities?
+3. Should this algorithm exist at all?
+
+*For Everyone:*
+4. Who benefits from this system?
+5. Who bears the risks?
+6. What happens when algorithmic recommendations become institutional pressure to comply?
+
+::: {.solution}
+**Analysis:**
+
+**The transparency problem:** You can see exactly why the algorithm made the decision. But every factor reflects systemic inequality:
+
+- Intellectual disability → employment discrimination → poverty → Medicaid → flagged as "risk"
+- Being a single parent (often result of domestic violence, lack of support) → flagged as "risk"
+- Previous contact (often from mandated reporters who conflate disability with inability) → flagged as "risk"
+
+**Social Work Response:**
+
+This is a textbook case where professional judgment must override algorithmic recommendation. Your assessment should focus on:
+- Actual child safety indicators (not poverty or disability markers)
+- Strengths and protective factors the algorithm ignores
+- Structural barriers Maria faces vs. individual parenting deficits
+
+**Document your reasoning carefully.** If your agency culture pressures compliance with algorithmic scores, you may face institutional resistance. Connect with colleagues who share concerns; collective advocacy is stronger.
+
+**Computer Science Response:**
+
+These features violate basic fairness principles:
+- **Disability status** (via "cognitive assessment") is a protected attribute—using it in high-stakes decisions may violate the EU AI Act and disability rights law
+- **Poverty proxies** (Medicaid) create disparate impact—the model penalizes people for being poor
+- **Previous contact** creates feedback loops—false reports lead to higher risk scores, which justify more investigations
+
+**Better approach:**
+- If the goal is identifying children in danger, use features actually correlated with harm (evidence of injury, substance abuse, domestic violence)
+- If those features aren't available, **don't build the system**—relying on poverty proxies doesn't predict danger, it predicts who gets surveilled
+
+**Structural Question:**
+
+Even perfectly "fair" algorithms can't fix broken systems. Child welfare in many countries disproportionately removes children from poor families and disabled parents not because of actual maltreatment rates, but because of resource scarcity and bias.
+
+An algorithm trained on this data will perpetuate it. The solution isn't better algorithms—it's better policy: universal childcare, healthcare, housing support that address root causes.
+:::
+:::
+
+::: {.details}
+#### For Computer Science Students: How SHAP Actually Works
+
+SHAP (SHapley Additive exPlanations) uses game theory to fairly attribute credit/blame to features.
+
+**The intuition:** Imagine each feature is a player on a team. The "payoff" is the prediction. How much did each player contribute?
+
+**The math:**
+
+For feature $i$ and prediction function $f$, the Shapley value $\phi_i$ is:
+
+$\phi_i = \sum_{S \subseteq N \setminus \{i\}} \frac{|S|!(|N|-|S|-1)!}{|N|!} [f(S \cup \{i\}) - f(S)]$
+
+Where:
+- $N$ = set of all features
+- $S$ = subset of features excluding $i$
+- $f(S \cup \{i\}) - f(S)$ = marginal contribution of feature $i$ when added to subset $S$
+- The fraction weights each subset by its size
+
+**In plain language:** Calculate how much feature $i$ changes the prediction when added to every possible combination of other features, then average those contributions.
+
+**Why it's rigorous:** SHAP satisfies three desirable properties:
+1. **Local accuracy**: Explanations sum to the actual prediction
+2. **Missingness**: Absent features get zero attribution
+3. **Consistency**: If a feature's contribution increases, its SHAP value doesn't decrease
+
+**The limitation:** SHAP assumes features are independent. In reality:
+- "Medicaid enrollment" and "single-parent household" correlate (poverty)
+- "Cognitive assessment score" and "healthcare utilization" correlate (disability)
+
+When features interact, SHAP may misattribute influence. An explanation can be mathematically correct but causally meaningless.
+
+**Practical implication:** SHAP tells you *what* the model used, not *whether it should have used it*. Explaining a discriminatory decision doesn't make it fair.
+:::
+
+---
+
+## Intersectionality: When Bias Multiplies
+
+**Meet three students, all applying for the same scholarship:**
+
+**Anna:** White woman with mobility disability (wheelchair user)  
+**Marcus:** Black man, no disability  
+**Keisha:** Black woman with mobility disability (wheelchair user)
+
+A university uses an AI system to screen scholarship applications, looking for "leadership potential" and "academic excellence."
+
+**Question:** Which student faces the most algorithmic bias?
+
+**You might think:** Keisha faces bias as a woman + bias as a Black person + bias as a disabled person. So three separate biases, additive.
+
+**Reality:** Keisha faces a distinct form of discrimination that's not just the sum of parts. She experiences **intersectional bias**—qualitatively different from what Anna or Marcus face.
+
+**Why?**
+
+Most AI fairness research tests bias along single dimensions:
+- Does the system discriminate based on gender? (Compare men vs. women)
+- Does it discriminate based on race? (Compare white vs. Black)
+- Does it discriminate based on disability? (Compare disabled vs. non-disabled)
+
+But testing these separately **misses compound discrimination.**
+
+---
+
+**What actually happens:**
+
+**Anna** (white woman, wheelchair user):
+- Penalized for disability markers in CV
+- But benefits from white privilege in facial recognition (if photo required)
+- "Inspirational" framing partially compensates (problematic but strategic)
+
+**Marcus** (Black man, non-disabled):
+- Penalized for race in name-based screening
+- But benefits from gender bias favoring men in STEM leadership
+- Mobility doesn't restrict participation in activities
+
+**Keisha** (Black woman, wheelchair user):
+- Penalized for disability markers
+- Penalized for race in name-based screening
+- Penalized for gender in leadership assessment
+- **Plus:** Faces unique stereotypes (intersectional) that don't apply to Anna or Marcus:
+  - Black women with disabilities are stereotyped as "doubly dependent"
+  - Less likely to be seen as "inspirational" (reserved for white disabled people)
+  - Architectural barriers + racial discrimination in housing = fewer opportunities to participate in activities AI values
+
+**A 2024 study tested this:** Researchers submitted identical CVs to AI resume screeners, varying only the signals of race, gender, and disability.
+
+**Results:**
+- Average bias against disability: 40% lower ranking
+- Average bias against Black applicants: 35% lower ranking
+- Combined bias against Black disabled women: **72%** lower ranking
+
+Not additive (40% + 35% = 75%). **Multiplicative**—intersections create distinct, compounded disadvantage.
+
+---
+
+**Why this matters beyond hiring:**
+
+Facial recognition algorithms show intersectional failures:
+- Worst accuracy: Dark-skinned women (34.7% error)
+- Better accuracy: Dark-skinned men (12.0% error)
+- Better accuracy: Light-skinned women (7.1% error)
+- Best accuracy: Light-skinned men (0.8% error)
+
+If you're a dark-skinned woman with a disability—say, facial asymmetry from a stroke—the error rate compounds further. The system was trained on faces that don't look like yours in multiple dimensions.
+
+::: {.details}
+#### For Computer Science Students: Formalizing Intersectional Fairness
+
+Traditional fairness metrics evaluate:
+
+$P(\hat{Y} = 1 | A = a)$
+
+across values of single protected attribute $A$ (e.g., gender).
+
+**Intersectional fairness requires:**
+
+$P(\hat{Y} = 1 | A_1 = a_1, A_2 = a_2, \ldots, A_k = a_k)$
+
+across combinations of protected attributes $(A_1, \ldots, A_k)$.
+
+**The computational challenge:**
+
+With 3 attributes (race, gender, disability) each with 3 values, that's $3^3 = 27$ intersectional groups.
+
+With limited data, many groups have too few training examples for reliable evaluation.
+
+**Emerging solutions:**
+
+1. **Hierarchical fairness:** Satisfy fairness at coarse granularity first (e.g., race), then refine for intersections where data permits
+2. **Generative augmentation:** Synthesize data for underrepresented intersections (risky—can amplify stereotypes if done poorly)
+3. **Constraint-based optimization:** Prioritize fairness for the most-disadvantaged intersection
+
+**Key insight:** You cannot achieve intersectional fairness by satisfying single-attribute fairness for each attribute separately. The math doesn't work that way.
+
+**Practical guidance:**
+
+When auditing a model:
+- Don't just report "no gender bias" and "no race bias"
+- Test combinations: How does the system treat Black women specifically?
+- If you can't get enough data for intersectional groups, that's a sign you shouldn't deploy the system—or that you need different methods entirely (human judgment, qualitative assessment)
+:::
+
+::: {.details}
+#### For Social Work Students: Intersectionality in Practice
+
+Kimberlé Crenshaw coined "intersectionality" in 1989, analyzing how Black women face discrimination distinct from both white women and Black men.
+
+**Application to disability:**
+
+- A white wheelchair user faces different barriers than a Black wheelchair user (who encounters both ableism and medical racism)
+- A woman with intellectual disability faces distinct employment discrimination compared to a man with the same disability (gendered expectations of "docility")
+- LGBTQ+ people with disabilities face compounded marginalization in both disability services (often heteronormative) and LGBTQ+ spaces (often inaccessible)
+
+**Why algorithms make this worse:**
+
+Human prejudice is often inconsistent—one interviewer might be racist but not ableist, another ableist but not sexist. There's variation.
+
+Algorithms are **systematically consistent**. If the training data encodes intersectional bias, the algorithm applies it to every single case, at scale, without variation.
+
+**Your role as a social worker:**
+
+When clients experience algorithmic discrimination, help them understand it's not personal failure—it's structural. And document patterns:
+
+- If multiple Black disabled women report being denied by the same housing algorithm, that's evidence for collective legal action
+- If clients across intersections experience similar barriers, that's data for policy advocacy
+
+**Challenge organizations using AI:** Demand disaggregated impact assessments. "Our system has no gender bias" is insufficient if it discriminates against disabled women specifically.
+:::
+
+---
+
+## What You Can Actually Do About This
+
+You've now read about Amazon's hiring algorithm, GPT-4's ableism, healthcare proxies, facial recognition failures, and feedback loops. It's overwhelming.
+
+**You might be thinking:** "I'm just one student. What can I possibly do?"
+
+**Here's what:**
+
+### For Social Work Students: Your Professional Toolkit
+
+**1. Advocate for Algorithmic Transparency**
+
+When agencies you work with implement AI systems, ask:
+- What decisions does this system make?
+- What data was it trained on?
+- Has it been tested for bias against protected groups?
+- Can decisions be appealed?
+
+If they can't answer, that's a red flag.
+
+**2. Document Patterns**
+
+Keep records when clients report:
+- Repeated automated rejections (housing, jobs, benefits)
+- Being flagged as "high risk" by systems
+- Accessibility features that don't work
+
+Individual cases may seem random. Patterns reveal systemic bias.
+
+**3. Know Your Legal Rights** (and Your Clients')
+
+- **EU AI Act:** High-risk systems must conduct fundamental rights impact assessments
+- **GDPR:** Right to explanation for automated decisions
+- **UN CRPD:** Right to accessibility and non-discrimination
+
+**4. Build Coalitions**
+
+Connect clients facing similar algorithmic harms. Collective advocacy is more powerful than individual complaints.
+
+**5. Question the Tool Itself**
+
+Sometimes the right answer is: "This decision shouldn't be automated at all."
+
+Child removal? Disability benefits? These require human judgment, context, and relationship—things algorithms can't provide.
+
+---
+
+### For Computer Science Students: Your Professional Responsibility
+
+**1. Demand Disaggregated Evaluation**
+
+Before any model deployment, require metrics broken down by:
+- Protected attributes (race, gender, disability)
+- Intersections (Black women, disabled immigrants)
+- Use cases (does it work in real-world conditions, not just clean test data?)
+
+If your team says "we can't get that data," push back. If you can't evaluate fairly, you shouldn't deploy.
+
+**2. Participate in Bias Audits**
+
+Learn to use tools like:
+- **Aequitas:** Bias and fairness audit toolkit
+- **Fairlearn:** Microsoft's fairness assessment library
+- **AI Fairness 360:** IBM's comprehensive toolkit
+
+Make auditing part of your development workflow, not a post-deployment afterthought.
+
+**3. Challenge Proxy Choices**
+
+When someone proposes using:
+- Zip code (proxy for race)
+- Employment history (proxy for discrimination)
+- Healthcare costs (proxy for need)
+- Speech fluency (proxy for intelligence)
+
+Ask: "Does this correlate equally across groups with what we're actually trying to measure?"
+
+**4. Advocate for Inclusive Design Teams**
+
+Homogeneous teams produce homogeneous perspectives. Push for:
+- Disabled people on design teams (not just as "accessibility consultants")
+- Diverse perspectives in ML research
+- Community co-design for systems affecting marginalized groups
+
+**5. Know When to Say No**
+
+Sometimes the most ethical code is code you refuse to write.
+
+If your employer asks you to build:
+- A hiring screener when training data is discriminatory
+- A risk assessment tool using poverty as a proxy for danger
+- A facial recognition system without consent mechanisms
+
+You can say no. And if you're in a position of privilege, you should.
+
+---
+
+### For Everyone: Collective Action
+
+**1. Demand Accountability from Platforms You Use**
+
+When you encounter:
+- Generative AI that erases disability
+- Search results that stereotype
+- Social media algorithms that amplify hate
+
+Report it. Publicly. Platforms respond to collective pressure more than individual feedback.
+
+**2. Support Affected Communities**
+
+Follow and amplify work by:
+- Algorithmic Justice League (Joy Buolamwini)
+- Data & Society Research Institute
+- AI Now Institute
+- Disabled people leading accessibility advocacy
+
+**3. Educate Yourself Continuously**
+
+This chapter is a starting point. The field evolves rapidly. Stay current:
+- Read bias audit reports when released
+- Follow AI ethics researchers
+- Attend conferences (FAccT, AIES, etc.)
+
+**4. Vote and Advocate for Regulation**
+
+The EU AI Act exists because people demanded it. Support:
+- Transparency requirements for automated decision systems
+- Right to human review
+- Mandatory bias auditing
+- Stronger enforcement mechanisms
+
+**5. Center Affected Communities**
+
+"Nothing About Us Without Us" isn't just a slogan.
+
+If you're building systems affecting people with disabilities, **involve disabled people from day one**—not as test subjects, but as co-designers with decision-making power.
+
+If you're advocating for policy, **follow the leadership of those most affected**.
+
+---
+
+## Reflection: What's Your Role?
+
+Think about your future professional context. How will algorithmic bias appear in your work?
+
+::: {.flip-card}
+#### For Computer Science Students
+
+**Front:** How does your technical training prepare you to recognize bias in ML systems? What perspectives might you be missing?
+
+**Back:** 
+
+Technical skills enable you to audit code, evaluate fairness metrics, and implement mitigation techniques. But recognizing *which* biases matter, *whose* fairness to prioritize, and *when* technical solutions are inappropriate requires engaging domains beyond computer science—particularly disability studies, critical race theory, ethics, and law.
+
+Your role: Build systems that support rather than bypass human judgment. Recognize the limits of technical fixes for social problems. Question whether automation is the right tool for high-stakes decisions affecting human rights.
+
+Most importantly: **Use your privilege to say no.** If you're asked to build a discriminatory system and you have the economic security to refuse, refusing is an ethical imperative.
+:::
+
+::: {.flip-card}
+#### For Social Work Students
+
+**Front:** How does algorithmic bias connect to forms of oppression you already recognize? What's your role when agencies adopt AI tools?
+
+**Back:**
+
+You already understand structural discrimination—ableism, racism, classism encoded in institutions. Algorithmic bias is those same power structures automated and scaled.
+
+Your role: Advocate for clients harmed by algorithmic decisions. Demand transparency and accountability from agencies. Question whether predictive tools reproduce historical injustices. Insist that human judgment cannot be delegated to machines when fundamental rights are at stake.
+
+You bring critical perspective that technical designers lack. **You know how to ask: Who benefits? Who is harmed? Who decides?** These questions are essential to responsible AI deployment.
+
+When algorithms recommend removing a child, denying benefits, or flagging someone as "high risk," you have professional authority to challenge those recommendations. Use it.
+:::
+
+---
+
+## Key Takeaways
+
+**1. AI systems inherit our past.**
+
+Historical data encodes historical discrimination. People with disabilities have faced employment exclusion, educational segregation, and medical paternalism for centuries. No technical sophistication can purify biased inputs—the solution lies in confronting the injustices that generated those patterns in the first place.
+
+**2. Exclusion is baked into the pipeline.**
+
+People with disabilities are systematically absent from:
+- Training data (the 2% problem)
+- Design teams (fewer than 5% of tech workers disclose disabilities)
+- Evaluation protocols (most AI benchmarks ignore accessibility)
+
+Inclusion cannot be retrofitted. It requires participatory design from the beginning.
+
+**3. Bias compounds at intersections.**
+
+Single-attribute analysis (gender *or* race *or* disability) masks significant harms. Black women with disabilities face distinct discrimination that exceeds the sum of individual biases. Fairness frameworks must target the most-disadvantaged intersectional groups.
+
+**4. Transparency ≠ justice.**
+
+Explainable AI makes bias visible; it doesn't prevent it. You can have a perfectly transparent system that's deeply discriminatory. Understanding how an algorithm reached a decision is necessary but insufficient—we must act on those insights.
+
+**5. The same technology can liberate or oppress.**
+
+AI can remove barriers (speech recognition, navigation aids, adaptive learning) or reinforce them (biased hiring, surveillance, risk scoring). The difference isn't the technology itself, but **who controls it**, **for what purpose**, and **with what accountability**.
+
+**6. Your discipline contributes whether you intend to or not.**
+
+Computer scientists build the systems. Social workers implement them. Both professions shape whether AI amplifies fairness or prejudice. Recognition of that responsibility is the first step toward accountability.
+
+**Technology is not destiny—it is design.** We can choose to build systems that amplify equity rather than inequality, but doing so requires acknowledging that fairness is political, contested, and irreducibly human.
+
+---
+
+## Further Resources {.appendix}
+
+**Documentaries:**  
+🎥 *Coded Bias* (dir. Shalini Kantayya, 2020) — Chronicles Joy Buolamwini's research and the Gender Shades study  
+🎥 *All Watched Over by Machines of Loving Grace* (dir. Adam Curtis, 2011) — Historical perspective on technological utopianism
+
+**Reports & Research:**  
+📄 Buolamwini, J., & Gebru, T. (2018): "Gender Shades: Intersectional Accuracy Disparities in Commercial Gender Classification," *Proceedings of Machine Learning Research*, 81:1–15  
+📄 Hickman, L., et al. (2024): "Algorithmic Bias in Machine Learning-Based Personnel Selection," *Journal of Applied Psychology* [Integrative review of 328 studies]  
+📄 Obermeyer, Z., et al. (2019): "Dissecting racial bias in an algorithm used to manage the health of populations," *Science*, 366(6464):447-453 [Healthcare algorithm study]  
+📄 UNDP (2023): *Gender Bias in Generative AI Tools*
+
+**Toolkits & Practical Resources:**  
+🧰 **Aequitas:** Bias and fairness audit toolkit (University of Chicago) — http://aequitas.dssg.io  
+🧰 **Fairlearn:** Fairness assessment and mitigation (Microsoft) — https://fairlearn.org  
+🧰 **AI Fairness 360:** Open-source toolkit (IBM) — https://aif360.mybluemix.net  
+🧰 **IncluSet:** Accessible and inclusive dataset repository
+
+**Books:**  
+📘 Christian, Brian (2020): *The Alignment Problem: Machine Learning and Human Values.* W.W. Norton  
+📘 O'Neil, Cathy (2016): *Weapons of Math Destruction: How Big Data Increases Inequality and Threatens Democracy.* Crown  
+📘 Noble, Safiya Umoja (2018): *Algorithms of Oppression: How Search Engines Reinforce Racism.* NYU Press  
+📘 Benjamin, Ruha (2019): *Race After Technology: Abolitionist Tools for the New Jim Code.* Polity  
+📘 Eubanks, Virginia (2018): *Automating Inequality: How High-Tech Tools Profile, Police, and Punish the Poor.* St. Martin's Press
+
+**Organizations to Follow:**  
+🌐 **Algorithmic Justice League** (Joy Buolamwini) — https://www.ajl.org  
+🌐 **AI Now Institute** (NYU) — https://ainowinstitute.org  
+🌐 **Data & Society Research Institute** — https://datasociety.net  
+🌐 **Partnership on AI** — https://partnershiponai.org
+
+**Academic Conferences:**  
+📊 **ACM FAccT** (Fairness, Accountability, and Transparency)  
+📊 **AIES** (AI, Ethics, and Society)  
+📊 **NeurIPS** (Neural Information Processing Systems — has fairness track)
+
+---
+
+**Next Session:** From bias to accountability—frameworks for *Algorithmic Justice*, legal remedies for AI harm, and participatory governance models that center marginalized communities in AI development.

@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sarah's Rejection: The Black Box</title>
+    <style>
+        :root {
+            --thws-orange: #ff6a00;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --bg-gray: #f4f4f4;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: var(--text-dark);
+            background: transparent;
+        }
+
+        .thws-card {
+            border-left: 5px solid var(--thws-orange);
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid #eee;
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h3 {
+            margin: 0 0 5px 0;
+            width: 100%;
+        }
+
+        p.subtitle {
+            margin: 0 0 25px 0;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            width: 100%;
+        }
+
+        /* --- STAGE 1: CV INPUT --- */
+        .cv-container {
+            width: 100%;
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 4px;
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .cv-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+        }
+
+        .cv-title {
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .cv-badge {
+            background: #eee;
+            padding: 2px 6px;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            color: #555;
+        }
+
+        .cv-items {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+
+        .cv-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .cv-icon {
+            color: var(--thws-orange);
+            font-size: 1.1em;
+        }
+
+        /* --- ARROWS --- */
+        .arrow-down {
+            font-size: 24px;
+            color: #ccc;
+            margin: 10px 0;
+            animation: bounce 2s infinite;
+        }
+
+        /* --- STAGE 2: THE BOX --- */
+        .box-container {
+            width: 100%;
+            perspective: 1000px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .box-container:hover {
+            transform: scale(1.01);
+        }
+
+        .black-box {
+            background: linear-gradient(135deg, #333 0%, #000 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            position: relative;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.5s ease;
+            overflow: hidden;
+        }
+
+        .box-content-hidden {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .mystery-icon {
+            font-size: 3rem;
+            font-weight: 800;
+            opacity: 0.8;
+            animation: pulse 1.5s infinite;
+        }
+
+        .box-label {
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-top: 10px;
+            opacity: 0.7;
+        }
+
+        .click-hint {
+            font-size: 0.75rem;
+            color: var(--thws-orange);
+            margin-top: 10px;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        /* Revealed State Styles */
+        .white-box-content {
+            display: none;
+            width: 100%;
+            text-align: left;
+            animation: fadeIn 0.5s;
+        }
+
+        .logic-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+        }
+
+        .logic-row:last-child {
+            border-bottom: none;
+        }
+
+        .score-val {
+            font-weight: bold;
+            font-family: monospace;
+            font-size: 1.1rem;
+        }
+
+        .score-neg {
+            color: #ff6b6b;
+        }
+
+        .score-pos {
+            color: #5ecc85;
+        }
+
+        .score-neutral {
+            color: #aaa;
+            text-decoration: line-through;
+        }
+
+        .feature-name {
+            color: #ddd;
+        }
+
+        .feature-highlight {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .fix-btn {
+            margin-top: 15px;
+            width: 100%;
+            padding: 10px;
+            background: var(--thws-orange);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .fix-btn:hover {
+            background: #e65f00;
+        }
+
+        .fix-btn:disabled {
+            background: #555;
+            cursor: default;
+            opacity: 0.7;
+        }
+
+        /* --- STAGE 3: OUTPUT --- */
+        .result-box {
+            width: 100%;
+            padding: 15px;
+            text-align: center;
+            border-radius: 6px;
+            font-weight: 700;
+            margin-top: 5px;
+            transition: all 0.4s ease;
+        }
+
+        .result-rejected {
+            background: #fff5f5;
+            border: 2px solid var(--danger);
+            color: var(--danger);
+        }
+
+        .result-accepted {
+            background: #f0fff4;
+            border: 2px solid var(--success);
+            color: var(--success);
+        }
+
+        .timer {
+            font-size: 0.75rem;
+            font-weight: 400;
+            margin-top: 4px;
+            color: #888;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes pulse {
+            0% {
+                opacity: 0.4;
+                transform: scale(0.95);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+
+            100% {
+                opacity: 0.4;
+                transform: scale(0.95);
+            }
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(5px);
+            }
+
+            60% {
+                transform: translateY(3px);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="thws-card">
+        <h3>Sarah's Application Process</h3>
+        <p class="subtitle">An algorithm decides Sarah's future in 48 seconds. Click the Black Box to investigate why
+            she was rejected.</p>
+
+        <div class="cv-container">
+            <div class="cv-header">
+                <span class="cv-title">Sarah M. (Applicant #4092)</span>
+                <span class="cv-badge">PDF Document</span>
+            </div>
+            <div class="cv-items">
+                <div class="cv-item"><span class="cv-icon">🎓</span> BA Social Work (1.3 GPA)</div>
+                <div class="cv-item"><span class="cv-icon">🗣️</span> 3 Languages (C1)</div>
+                <div class="cv-item"><span class="cv-icon">🏥</span> 6 mo. Gap (Medical)</div>
+                <div class="cv-item"><span class="cv-icon">💼</span> Part-time Retail</div>
+                <div class="cv-item"><span class="cv-icon">♿</span> Chair, Disability Rights</div>
+                <div class="cv-item"><span class="cv-icon">📍</span> Address: Postal Code 972..</div>
+            </div>
+        </div>
+
+        <div class="arrow-down">↓</div>
+
+        <div class="box-container" onclick="openBox()">
+            <div class="black-box" id="algoBox">
+
+                <div class="box-content-hidden" id="boxHidden">
+                    <div class="mystery-icon">? ? ?</div>
+                    <div class="box-label">Algorithm Processing</div>
+                    <div class="click-hint">Click to Open Black Box</div>
+                </div>
+
+                <div class="white-box-content" id="boxRevealed">
+                    <div
+                        style="font-weight:700; color:#fff; margin-bottom:10px; border-bottom:1px solid #555; padding-bottom:5px;">
+                        Internal Scoring Logic</div>
+
+                    <div class="logic-row">
+                        <span class="feature-name">Academic Score (GPA 1.3)</span>
+                        <span class="score-val score-pos">+50</span>
+                    </div>
+
+                    <div class="logic-row">
+                        <span class="feature-name">Employment History <br><span
+                                style="font-size:0.75rem; color:#aaa;">(Flag: "Gap > 3 months")</span></span>
+                        <span class="score-val score-neg" id="score-gap">-40</span>
+                    </div>
+
+                    <div class="logic-row">
+                        <span class="feature-name">Job Type Consistency <br><span
+                                style="font-size:0.75rem; color:#aaa;">(Flag: "Part-time only")</span></span>
+                        <span class="score-val score-neg" id="score-job">-25</span>
+                    </div>
+
+                    <div class="logic-row">
+                        <span class="feature-name">Keyword Analysis <br><span
+                                style="font-size:0.75rem; color:#aaa;">(Flag: "Disability")</span></span>
+                        <span class="score-val score-neg" id="score-key">-15</span>
+                    </div>
+
+                    <div class="logic-row" style="margin-top:5px; border-top:1px solid #555; padding-top:10px;">
+                        <span class="feature-highlight">TOTAL SCORE</span>
+                        <span class="score-val score-neg" id="total-score">-30</span>
+                    </div>
+
+                    <button class="fix-btn" id="fixBtn" onclick="removeBias(event)">✨ REMOVE BIAS &
+                        RE-CALCULATE</button>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="arrow-down">↓</div>
+
+        <div class="result-box result-rejected" id="resultCard">
+            <div style="font-size: 1.5rem;" id="resultIcon">❌</div>
+            <div id="resultText">APPLICATION REJECTED</div>
+            <div class="timer">Processing time: 0.048s</div>
+        </div>
+
+    </div>
+
+    <script>
+        let isBoxOpen = false;
+        let biasRemoved = false;
+
+        function openBox() {
+            if (isBoxOpen) return;
+
+            isBoxOpen = true;
+            const box = document.getElementById('algoBox');
+            const hiddenContent = document.getElementById('boxHidden');
+            const revealedContent = document.getElementById('boxRevealed');
+
+            // Style changes
+            hiddenContent.style.display = 'none';
+            revealedContent.style.display = 'block';
+            box.style.cursor = 'default';
+
+            // Remove hover scale effect from parent
+            document.querySelector('.box-container').style.transform = 'none';
+        }
+
+        function removeBias(e) {
+            e.stopPropagation(); // Prevent bubbling
+            if (biasRemoved) return;
+
+            biasRemoved = true;
+            const btn = document.getElementById('fixBtn');
+            btn.innerHTML = "Processing Fairness Model...";
+            btn.disabled = true;
+
+            setTimeout(() => {
+                // Update UI elements to show "Fairness"
+
+                // 1. Employment Gap
+                document.getElementById('score-gap').className = "score-val score-neutral";
+                document.getElementById('score-gap').innerHTML = "0 <span style='font-size:0.7rem; color:#fff;'>(Justified)</span>";
+
+                // 2. Job Type
+                document.getElementById('score-job').className = "score-val score-neutral";
+                document.getElementById('score-job').innerHTML = "0 <span style='font-size:0.7rem; color:#fff;'>(Relevant)</span>";
+
+                // 3. Keyword
+                document.getElementById('score-key').className = "score-val score-pos";
+                document.getElementById('score-key').innerHTML = "+10 <span style='font-size:0.7rem; color:#fff;'>(Leadership)</span>";
+
+                // Total Score Update
+                const totalDisplay = document.getElementById('total-score');
+                totalDisplay.className = "score-val score-pos";
+                totalDisplay.innerText = "+60"; // 50 + 10
+
+                // Button Update
+                btn.innerHTML = "Bias Filters Removed";
+                btn.style.background = "#555";
+
+                // Result Card Update
+                const resCard = document.getElementById('resultCard');
+                const resText = document.getElementById('resultText');
+                const resIcon = document.getElementById('resultIcon');
+
+                resCard.className = "result-box result-accepted";
+                resIcon.innerText = "✅";
+                resText.innerText = "INTERVIEW INVITED";
+
+            }, 800);
+        }
+    </script>
+
+</body>
+
+</html>
