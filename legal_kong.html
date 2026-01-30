@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Kong V2 - Jump & Run Compliance Challenge</title>
+    <style>
+        :root {
+            --thws-orange: #FF5F00;
+            --thws-grey: #5E6A71;
+            --thws-black: #1A1A1A;
+            --thws-white: #FFFFFF;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--thws-black);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--thws-white);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #game-container {
+            position: relative;
+            border: 4px solid var(--thws-grey);
+            box-shadow: 0 0 20px rgba(255, 95, 0, 0.3);
+        }
+
+        canvas {
+            display: block;
+            background-color: #0d0d0d;
+        }
+
+        #ui-layer {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            pointer-events: none;
+            width: calc(100% - 20px);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .stat-box {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 5px 15px;
+            border-radius: 4px;
+            border-left: 3px solid var(--thws-orange);
+            font-weight: bold;
+        }
+
+        #modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        #question-modal {
+            background: var(--thws-grey);
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 85%;
+            border: 2px solid var(--thws-orange);
+            text-align: center;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+            line-height: 1.4;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: var(--thws-black);
+            color: white;
+            border: 1px solid var(--thws-orange);
+            padding: 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            font-size: 1rem;
+        }
+
+        .option-btn:hover {
+            background: var(--thws-orange);
+            color: black;
+            transform: scale(1.02);
+        }
+
+        #start-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 26, 26, 0.98);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 110;
+        }
+
+        .title {
+            color: var(--thws-orange);
+            font-size: 3.5rem;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.1);
+        }
+
+        .instructions {
+            margin: 25px 0;
+            color: #ccc;
+            text-align: center;
+            max-width: 500px;
+            line-height: 1.6;
+        }
+
+        .start-btn {
+            background: var(--thws-orange);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            font-size: 1.6rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(255, 95, 0, 0.4);
+        }
+
+        .start-btn:hover {
+            transform: scale(1.05);
+            background: #ff7520;
+        }
+
+        #message {
+            position: absolute;
+            bottom: 30px;
+            width: 100%;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--thws-orange);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="game-container">
+        <canvas id="gameCanvas" width="850" height="650"></canvas>
+
+        <div id="ui-layer">
+            <div class="stat-box">Compliance Score: <span id="score">0</span></div>
+            <div class="stat-box">Progression: <span id="level">0 / 7</span></div>
+        </div>
+
+        <div id="modal-overlay">
+            <div id="question-modal">
+                <div class="question-text" id="q-text">Frage?</div>
+                <div class="options" id="q-options"></div>
+            </div>
+        </div>
+
+        <div id="start-screen">
+            <h1 class="title">LEGAL KONG V2</h1>
+            <p style="color: #888; letter-spacing: 2px;">ADVANCED COMPLIANCE RUN</p>
+            <div class="instructions">
+                Collect floating <b>? Nodes</b> for extra Score & Compliance validation.<br>
+                Avoid <b>Legal Risk Barrels</b> at all costs!<br><br>
+                <b>ARROWS</b>: Move & Climb | <b>SPACE</b>: Jump<br>
+                <i>Smoother Physics & More Action!</i>
+            </div>
+            <button class="start-btn" onclick="startGame()">START MISSION</button>
+        </div>
+
+        <div id="message">Korrekt!</div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreEl = document.getElementById('score');
+        const levelEl = document.getElementById('level');
+        const modal = document.getElementById('modal-overlay');
+        const qText = document.getElementById('q-text');
+        const qOptions = document.getElementById('q-options');
+        const startScreen = document.getElementById('start-screen');
+        const message = document.getElementById('message');
+
+        // Game Configuration
+        const config = {
+            gravity: 0.35,          // Reduced for floatier jumps
+            jumpForce: -10,         // Increased for higher reach
+            acceleration: 0.8,
+            friction: 0.85,
+            maxSpeed: 5,
+            climbSpeed: 3.5,
+            colors: {
+                platform: '#FF5F00',
+                ladder: '#5E6A71',
+                player: '#FFFFFF',
+                barrel: '#FF5F00',
+                node: '#00D4FF'
+            }
+        };
+
+        // Questions Pool (Extracted from legal-frameworks-ai.qmd)
+        const allQuestions = [
+            { text: "Welches der folgenden ist KEINE personenbezogene Daten unter der DSGVO?", options: [{ text: "IP-Adresse", c: false }, { text: "LinkedIn-Profil", c: false }, { text: "Statistische Daten (anonym)", c: true }] },
+            { text: "Was ist ein 'Verantwortlicher' (Controller)?", options: [{ text: "Entscheidet über Zweck/Mittel", c: true }, { text: "Befolgt nur Anweisungen", c: false }, { text: "Programmiert den Code", c: false }] },
+            { text: "Welche KI-Praxis ist 'unannehmbares Risiko'?", options: [{ text: "Chatbots", c: false }, { text: "Social Scoring", c: true }, { text: "Spam Filter", c: false }] },
+            { text: "Art. 22 DSGVO schützt vor was?", options: [{ text: "Hohen Kosten", c: false }, { text: "Alleiniger automatisierter Entscheidung", c: true }, { text: "Passwortdiebstahl", c: false }] },
+            { text: "Emotionserkennung in Schulen ist...", options: [{ text: "Erlaubt zur Lernhilfe", c: false }, { text: "Generell verboten", c: true }, { text: "Plicht ab Klasse 5", c: false }] },
+            { text: "Was ist 'Datenminimierung'?", options: [{ text: "So wenig Daten wie möglich", c: true }, { text: "Daten klein komprimieren", c: false }, { text: "Daten nach 1 Tag löschen", c: false }] },
+            { text: "Ein 'Processor' ist...", options: [{ text: "Arbeitet im Auftrag", c: true }, { text: "Bestimmt den Zweck", c: false }, { text: "Besitzt alle Datenrechte", c: false }] },
+            { text: "Biometrische Daten für Identifikation sind...", options: [{ text: "Immer erlaubt", c: false }, { text: "Sensible Daten (Art. 9)", c: true }, { text: "Keine personenbezogenen Daten", c: false }] }
+        ];
+
+        // Game State
+        let gameRunning = false;
+        let score = 0;
+        let solvedQuestions = 0;
+        let frames = 0;
+        let keys = {};
+
+        // Dynamic Objects
+        let platforms = [];
+        let ladders = [];
+        let questionNodes = [];
+        let barrels = [];
+
+        function initLevel() {
+            // Complex Jump & Run Layout
+            platforms = [
+                { x: 0, y: 600, w: 900, h: 20 },   // Ground
+                { x: 50, y: 500, w: 200, h: 15 },
+                { x: 350, y: 520, w: 150, h: 15 },
+                { x: 600, y: 480, w: 200, h: 15 },
+                { x: 50, y: 380, w: 300, h: 15 },
+                { x: 500, y: 380, w: 300, h: 15 },
+                { x: 300, y: 300, w: 150, h: 15 },
+                { x: 100, y: 220, w: 200, h: 15 },
+                { x: 550, y: 220, w: 250, h: 15 },
+                { x: 325, y: 120, w: 200, h: 20 }  // Compliance Goal
+            ];
+
+            ladders = [
+                { x: 260, y: 500, w: 25, h: 100 },
+                { x: 550, y: 380, w: 25, h: 100 },
+                { x: 100, y: 220, w: 25, h: 160 },
+                { x: 700, y: 220, w: 25, h: 160 },
+                { x: 410, y: 120, w: 25, h: 100 },
+                // Added for V3 Balance
+                { x: 50, y: 380, w: 25, h: 120 },
+                { x: 750, y: 380, w: 25, h: 100 },
+                { x: 350, y: 220, w: 25, h: 80 }
+            ];
+
+            questionNodes = [
+                { x: 150, y: 470, question: allQuestions[0], solved: false },
+                { x: 420, y: 490, question: allQuestions[1], solved: false },
+                { x: 700, y: 450, question: allQuestions[2], solved: false },
+                { x: 200, y: 350, question: allQuestions[3], solved: false },
+                { x: 650, y: 350, question: allQuestions[4], solved: false },
+                { x: 150, y: 190, question: allQuestions[5], solved: false },
+                { x: 650, y: 190, question: allQuestions[6], solved: false }
+            ];
+
+            player.reset();
+            barrels = [];
+            score = 0;
+            solvedQuestions = 0;
+            updateUI();
+        }
+
+        class Player {
+            constructor() { this.reset(); this.w = 26; this.h = 36; }
+            reset() {
+                this.x = 50; this.y = 550;
+                this.vx = 0; this.vy = 0;
+                this.onGround = false; this.onLadder = false; this.climbing = false;
+            }
+            update() {
+                // Smoother Movement Physics
+                if (keys['ArrowLeft']) this.vx -= config.acceleration;
+                else if (keys['ArrowRight']) this.vx += config.acceleration;
+                else this.vx *= config.friction;
+
+                if (this.vx > config.maxSpeed) this.vx = config.maxSpeed;
+                if (this.vx < -config.maxSpeed) this.vx = -config.maxSpeed;
+
+                if (!this.onLadder) {
+                    this.vy += config.gravity;
+                }
+
+                // Ladder logic
+                this.onLadder = false;
+                ladders.forEach(l => {
+                    if (this.x + this.w > l.x && this.x < l.x + l.w &&
+                        this.y + this.h > l.y && this.y < l.y + l.h) {
+                        this.onLadder = true;
+                    }
+                });
+
+                if (this.onLadder) {
+                    if (keys['ArrowUp']) { this.vy = -config.climbSpeed; this.climbing = true; }
+                    else if (keys['ArrowDown']) { this.vy = config.climbSpeed; this.climbing = true; }
+                    else { if (this.climbing) this.vy = 0; }
+                }
+
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Collision with Platforms
+                this.onGround = false;
+                platforms.forEach(p => {
+                    if (this.y + this.h > p.y && this.y + this.h < p.y + p.h + 10 &&
+                        this.x + this.w > p.x && this.x < p.x + p.w && this.vy >= 0) {
+                        this.y = p.y - this.h;
+                        this.vy = 0;
+                        this.onGround = true;
+                        this.climbing = false;
+                    }
+                });
+
+                if (keys[' '] && this.onGround) { this.vy = config.jumpForce; this.onGround = false; }
+                if (this.x < 0) this.x = 0;
+                if (this.x + this.w > canvas.width) this.x = canvas.width - this.w;
+
+                // Win Case
+                if (this.y < 120 && this.x > 325 && this.x < 525) {
+                    triggerFinalQuestion();
+                }
+
+                // Check Node Collision
+                questionNodes.forEach(n => {
+                    if (!n.solved && Math.hypot(this.x + this.w / 2 - n.x, this.y + this.h / 2 - n.y) < 30) {
+                        triggerMidQuestion(n);
+                    }
+                });
+            }
+
+            draw() {
+                ctx.fillStyle = config.colors.player;
+                ctx.fillRect(this.x, this.y, this.w, this.h);
+                // Simple Detailing
+                ctx.fillStyle = config.colors.platform;
+                ctx.fillRect(this.x + 4, this.y + 4, 18, 10); // Visor/Face
+                ctx.fillStyle = 'white';
+                ctx.fillRect(this.x + 18, this.y + 6, 2, 2); // Eye
+            }
+        }
+
+        class Barrel {
+            constructor() {
+                this.x = Math.random() > 0.5 ? 20 : 830;
+                this.y = 80;
+                this.vx = this.x < 100 ? 2 : -2; // Reduced speed from 3
+                this.vy = 0;
+                this.r = 13;
+            }
+            update() {
+                this.vy += config.gravity;
+                this.x += this.vx;
+                this.y += this.vy;
+                platforms.forEach(p => {
+                    if (this.y + this.r > p.y && this.y + this.r < p.y + p.h + 5 &&
+                        this.x + this.r > p.x && this.x - this.r < p.x + p.w) {
+                        this.y = p.y - this.r; this.vy = 0;
+                    }
+                });
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+            }
+            draw() {
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+                ctx.fillStyle = config.colors.barrel; ctx.fill();
+                ctx.strokeStyle = "white"; ctx.stroke();
+            }
+        }
+
+        const player = new Player();
+        let activeNode = null;
+
+        function startGame() {
+            startScreen.style.display = 'none';
+            initLevel();
+            gameRunning = true;
+            loop();
+        }
+
+        function triggerMidQuestion(node) {
+            gameRunning = false;
+            activeNode = node;
+            const q = node.question;
+            showModal(q, (correct) => {
+                if (correct) {
+                    score += 150;
+                    solvedQuestions++;
+                    node.solved = true;
+                    showMessage("EXCELLENT! +150 Compliance Points");
+                } else {
+                    showMessage("RISK DETECTED! Run carefully.");
+                    // No reset, just node remains or disappears
+                    node.solved = true;
+                }
+                updateUI();
+                gameRunning = true;
+                loop();
+            });
+        }
+
+        function triggerFinalQuestion() {
+            gameRunning = false;
+            showModal(allQuestions[allQuestions.length - 1], (correct) => {
+                if (correct) { winGame(); }
+                else {
+                    showMessage("Final Compliance Audit Failed! Try again.");
+                    player.reset(); gameRunning = true; loop();
+                }
+            });
+        }
+
+        function showModal(q, callback) {
+            qText.innerText = q.text;
+            qOptions.innerHTML = '';
+            q.options.forEach(opt => {
+                const b = document.createElement('button');
+                b.className = 'option-btn';
+                b.innerText = opt.text;
+                b.onclick = () => { modal.style.display = 'none'; callback(opt.c); };
+                qOptions.appendChild(b);
+            });
+            modal.style.display = 'flex';
+        }
+
+        function winGame() {
+            gameRunning = false;
+            const finalScore = score + 500;
+            startScreen.innerHTML = `
+                <h1 class="title">AUDIT PASSED!</h1>
+                <p>Your AI is certified compliant with EU standards.</p>
+                <div style="font-size: 2rem; margin: 20px; color: gold;">SCORE: ${finalScore}</div>
+                <button class="start-btn" onclick="location.reload()">RE-RUN AUDIT</button>
+            `;
+            startScreen.style.display = 'flex';
+        }
+
+        function showMessage(txt) {
+            message.innerText = txt;
+            message.style.opacity = 1;
+            setTimeout(() => { message.style.opacity = 0; }, 2500);
+        }
+
+        function updateUI() {
+            scoreEl.innerText = score;
+            levelEl.innerText = `${solvedQuestions} / 7`;
+        }
+
+        function loop() {
+            if (!gameRunning) return;
+            frames++;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Platforms
+            ctx.fillStyle = config.colors.platform;
+            platforms.forEach(p => {
+                ctx.fillRect(p.x, p.y, p.w, p.h);
+                // Texture
+                ctx.fillStyle = 'rgba(0,0,0,0.2)';
+                for (let i = 10; i < p.w; i += 30) ctx.fillRect(p.x + i, p.y + 2, 4, p.h - 4);
+                ctx.fillStyle = config.colors.platform;
+            });
+
+            // Draw Ladders
+            ctx.strokeStyle = config.colors.ladder; ctx.lineWidth = 3;
+            ladders.forEach(l => {
+                ctx.strokeRect(l.x, l.y, l.w, l.h);
+                for (let i = l.y + 8; i < l.y + l.h; i += 12) {
+                    ctx.beginPath(); ctx.moveTo(l.x, i); ctx.lineTo(l.x + l.w, i); ctx.stroke();
+                }
+            });
+
+            // Draw Nodes
+            questionNodes.forEach(n => {
+                if (n.solved) return;
+                const bob = Math.sin(frames * 0.1) * 5;
+                ctx.fillStyle = config.colors.node;
+                ctx.beginPath(); ctx.arc(n.x, n.y + bob, 12, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = "white"; ctx.font = "bold 14px Arial"; ctx.fillText("?", n.x - 4, n.y + 5 + bob);
+            });
+
+            // Barrels
+            if (frames % 220 === 0) barrels.push(new Barrel()); // Reduced frequency from 100
+            barrels.forEach((b, i) => {
+                b.update(); b.draw();
+                if (Math.hypot(player.x + player.w / 2 - b.x, player.y + player.h / 2 - b.y) < player.w / 2 + b.r) {
+                    showMessage("NON-COMPLIANCE! Resetting Position...");
+                    player.reset(); barrels = [];
+                }
+                if (b.y > canvas.height + 20) barrels.splice(i, 1);
+            });
+
+            player.update();
+            player.draw();
+
+            ctx.fillStyle = "white"; ctx.font = "bold 16px Arial"; ctx.fillText("DEPLOY COMPLIANT AI", 335, 100);
+
+            requestAnimationFrame(loop);
+        }
+
+        window.addEventListener('keydown', e => keys[e.key] = true);
+        window.addEventListener('keyup', e => keys[e.key] = false);
+
+    </script>
+</body>
+
+</html>
