@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intersectionality Matrix — Compound Bias</title>
+    <style>
+        :root {
+            --thws-orange: #ff6a00;
+            --thws-orange-light: #fff0e6;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --bg-white: #ffffff;
+            --border-light: #eeeeee;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: var(--text-dark);
+            background: transparent;
+        }
+
+        .thws-card {
+            border-left: 5px solid var(--thws-orange);
+            background: var(--bg-white);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-light);
+            max-width: 750px;
+            margin: 0 auto;
+        }
+
+        h3 {
+            margin: 0 0 5px 0;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            margin: 0 0 20px 0;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        /* Toggle */
+        .toggle-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            background: #f9f9f9;
+            padding: 12px 15px;
+            border-radius: 6px;
+        }
+
+        .toggle-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            cursor: pointer;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #ccc;
+            border-radius: 26px;
+            transition: background 0.3s;
+        }
+
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            top: 3px;
+            left: 3px;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch input:checked+.toggle-slider {
+            background: var(--thws-orange);
+        }
+
+        .toggle-switch input:checked+.toggle-slider::before {
+            transform: translateX(24px);
+        }
+
+        .toggle-status {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        /* Matrix */
+        .matrix-wrapper {
+            overflow-x: auto;
+            margin-bottom: 15px;
+        }
+
+        .matrix-table {
+            border-collapse: collapse;
+            width: 100%;
+            min-width: 500px;
+        }
+
+        .matrix-table th {
+            background: #f5f5f5;
+            padding: 10px 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        .matrix-table th.corner {
+            background: transparent;
+            border: none;
+        }
+
+        .matrix-table th.row-header {
+            text-align: right;
+            padding-right: 12px;
+            background: #f5f5f5;
+            min-width: 80px;
+        }
+
+        .matrix-cell {
+            text-align: center;
+            padding: 12px 8px;
+            border: 1px solid #ddd;
+            transition: all 0.4s ease;
+            cursor: default;
+            position: relative;
+        }
+
+        .cell-value {
+            font-size: 1.2rem;
+            font-weight: 800;
+            font-family: 'Courier New', monospace;
+            display: block;
+        }
+
+        .cell-label {
+            font-size: 0.65rem;
+            color: var(--text-light);
+            display: block;
+            margin-top: 2px;
+        }
+
+        .cell-change {
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: block;
+            margin-top: 3px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .cell-change.visible {
+            opacity: 1;
+        }
+
+        .cell-change.negative {
+            color: #e74c3c;
+        }
+
+        .cell-change.positive {
+            color: #27ae60;
+        }
+
+        /* Tooltip */
+        .tooltip-box {
+            margin-top: 10px;
+            padding: 12px 14px;
+            background: var(--thws-orange-light);
+            border-left: 3px solid var(--thws-orange);
+            border-radius: 4px;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            min-height: 40px;
+        }
+
+        .tooltip-formula {
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            background: rgba(255, 106, 0, 0.1);
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        /* Color scale legend */
+        .scale-legend {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        .scale-bar {
+            height: 8px;
+            flex: 1;
+            border-radius: 4px;
+            background: linear-gradient(90deg, #e74c3c, #f39c12, #f1c40f, #2ecc71, #27ae60);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="thws-card">
+        <h3>Intersectionality Matrix</h3>
+        <p class="subtitle">Predicted callback rates for a job application. Toggle "Add Disability" to see how
+            intersectional bias compounds — notice it's not a uniform penalty.</p>
+
+        <div class="toggle-area">
+            <span class="toggle-label">♿ Add Disability:</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="disabilityToggle" onchange="updateMatrix()">
+                <span class="toggle-slider"></span>
+            </label>
+            <span class="toggle-status" id="toggleStatus">Off — No disability disclosed</span>
+        </div>
+
+        <div class="matrix-wrapper">
+            <table class="matrix-table" id="matrixTable">
+                <thead>
+                    <tr>
+                        <th class="corner"></th>
+                        <th>Man</th>
+                        <th>Woman</th>
+                        <th>Non-binary</th>
+                    </tr>
+                </thead>
+                <tbody id="matrixBody">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="scale-legend">
+            <span>Low callback</span>
+            <div class="scale-bar"></div>
+            <span>High callback</span>
+        </div>
+
+        <div class="tooltip-box" id="tooltipBox">
+            Hover over a cell to see the compound penalty calculation.
+        </div>
+    </div>
+
+    <script>
+        // Callback rates WITHOUT disability (percentage)
+        const baseRates = {
+            'White': { 'Man': 75, 'Woman': 68, 'Non-binary': 55 },
+            'Black': { 'Man': 58, 'Woman': 47, 'Non-binary': 38 },
+            'Hispanic': { 'Man': 62, 'Woman': 52, 'Non-binary': 42 }
+        };
+
+        // Disability penalties — NOT uniform! Intersections compound differently
+        const disabilityPenalties = {
+            'White': { 'Man': -12, 'Woman': -15, 'Non-binary': -18 },
+            'Black': { 'Man': -18, 'Woman': -22, 'Non-binary': -26 },
+            'Hispanic': { 'Man': -16, 'Woman': -20, 'Non-binary': -24 }
+        };
+
+        const races = ['White', 'Black', 'Hispanic'];
+        const genders = ['Man', 'Woman', 'Non-binary'];
+
+        function getColor(value) {
+            // Map 0-100 to a color
+            if (value >= 65) return '#27ae60';
+            if (value >= 55) return '#2ecc71';
+            if (value >= 45) return '#f1c40f';
+            if (value >= 35) return '#f39c12';
+            if (value >= 25) return '#e67e22';
+            return '#e74c3c';
+        }
+
+        function getTextColor(value) {
+            return value >= 45 ? '#333' : '#fff';
+        }
+
+        function updateMatrix() {
+            const hasDisability = document.getElementById('disabilityToggle').checked;
+            const tbody = document.getElementById('matrixBody');
+            const tooltip = document.getElementById('tooltipBox');
+            const status = document.getElementById('toggleStatus');
+
+            status.textContent = hasDisability
+                ? 'On — Disability disclosed on application'
+                : 'Off — No disability disclosed';
+
+            tbody.innerHTML = '';
+
+            for (const race of races) {
+                const tr = document.createElement('tr');
+                const th = document.createElement('th');
+                th.className = 'row-header';
+                th.textContent = race;
+                tr.appendChild(th);
+
+                for (const gender of genders) {
+                    const td = document.createElement('td');
+                    td.className = 'matrix-cell';
+
+                    const base = baseRates[race][gender];
+                    const penalty = disabilityPenalties[race][gender];
+                    const value = hasDisability ? Math.max(0, base + penalty) : base;
+
+                    td.style.background = getColor(value);
+                    td.style.color = getTextColor(value);
+
+                    const valueEl = document.createElement('span');
+                    valueEl.className = 'cell-value';
+                    valueEl.textContent = value + '%';
+                    td.appendChild(valueEl);
+
+                    const labelEl = document.createElement('span');
+                    labelEl.className = 'cell-label';
+                    labelEl.style.color = getTextColor(value);
+                    labelEl.style.opacity = '0.7';
+                    labelEl.textContent = 'callback';
+                    td.appendChild(labelEl);
+
+                    if (hasDisability) {
+                        const changeEl = document.createElement('span');
+                        changeEl.className = 'cell-change visible ' + (penalty < 0 ? 'negative' : 'positive');
+                        changeEl.style.color = getTextColor(value);
+                        changeEl.textContent = penalty + ' pp';
+                        td.appendChild(changeEl);
+                    }
+
+                    // Hover tooltip
+                    td.addEventListener('mouseenter', () => {
+                        if (hasDisability) {
+                            const absChange = Math.abs(penalty);
+                            const pctChange = ((penalty / base) * 100).toFixed(1);
+                            tooltip.innerHTML = `<strong>${race} ${gender} + Disability:</strong> 
+                                Base rate <span class="tooltip-formula">${base}%</span> 
+                                → Penalty <span class="tooltip-formula">${penalty} pp</span> 
+                                → Final <span class="tooltip-formula">${value}%</span> 
+                                (${pctChange}% relative drop). 
+                                ${absChange > 20 ? '<br><strong>⚠ Severe compound penalty</strong> — this intersection is penalized far more than the sum of individual factors.' : ''}`;
+                        } else {
+                            tooltip.innerHTML = `<strong>${race} ${gender}:</strong> 
+                                Baseline callback rate <span class="tooltip-formula">${base}%</span>. 
+                                Toggle disability to see the compound penalty at this intersection.`;
+                        }
+                    });
+
+                    tr.appendChild(td);
+                }
+
+                tbody.appendChild(tr);
+            }
+
+            // Summary insight
+            if (hasDisability) {
+                const whiteMan = baseRates['White']['Man'] + disabilityPenalties['White']['Man'];
+                const blackNB = baseRates['Black']['Non-binary'] + disabilityPenalties['Black']['Non-binary'];
+                tooltip.innerHTML = `<strong>Key insight:</strong> A White disabled man has a <span class="tooltip-formula">${whiteMan}%</span> callback rate. 
+                    A Black disabled non-binary applicant: <span class="tooltip-formula">${Math.max(0, blackNB)}%</span>. 
+                    That's a <span class="tooltip-formula">${whiteMan - Math.max(0, blackNB)} percentage point</span> gap — 
+                    not because of a single factor, but because penalties <strong>multiply</strong> at intersections.`;
+            }
+        }
+
+        // Initial render
+        updateMatrix();
+    </script>
+</body>
+
+</html>

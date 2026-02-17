@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attention Inequality — Gini Coefficient</title>
+    <style>
+        :root {
+            --thws-orange: #ff6a00;
+            --thws-orange-light: #fff0e6;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --bg-white: #ffffff;
+            --border-light: #eeeeee;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: var(--text-dark);
+            background: transparent;
+        }
+
+        .thws-card {
+            border-left: 5px solid var(--thws-orange);
+            background: var(--bg-white);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-light);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h3 {
+            margin: 0 0 5px 0;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            margin: 0 0 20px 0;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        /* Slider area */
+        .slider-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        .slider-label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            min-width: 120px;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: #ddd;
+            border-radius: 3px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--thws-orange);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .slider-value {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--thws-orange);
+            min-width: 40px;
+            text-align: right;
+        }
+
+        /* Chart area */
+        .chart-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        canvas {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Gini display */
+        .gini-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .gini-box {
+            text-align: center;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 2px solid var(--border-light);
+            transition: all 0.3s;
+        }
+
+        .gini-box.active {
+            border-color: var(--thws-orange);
+            background: var(--thws-orange-light);
+        }
+
+        .gini-value {
+            font-size: 1.6rem;
+            font-weight: 800;
+            font-family: 'Courier New', monospace;
+            transition: color 0.3s;
+        }
+
+        .gini-label {
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+        }
+
+        .insight-text {
+            font-size: 0.85rem;
+            color: var(--text-dark);
+            padding: 10px 14px;
+            background: var(--thws-orange-light);
+            border-left: 3px solid var(--thws-orange);
+            border-radius: 4px;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="thws-card">
+        <h3>Attention Inequality</h3>
+        <p class="subtitle">20 content creators produce content of equal quality. Move the slider to see how algorithmic
+            engagement optimization redistributes attention — and who vanishes first.</p>
+
+        <div class="slider-area">
+            <span class="slider-label">Algorithmic Boost:</span>
+            <input type="range" id="boostSlider" min="0" max="100" value="0" oninput="updateChart()">
+            <span class="slider-value" id="boostValue">0%</span>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="chart" height="220"></canvas>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-dot" style="background: #999;"></div> Majority creators
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background: #ff6a00;"></div> Minority creators (disabled, PoC, LGBTQ+)
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background: #333; border: 1px dashed #999;"></div> Equal share line
+            </div>
+        </div>
+
+        <div class="gini-row">
+            <div class="gini-box active" id="giniBox">
+                <div class="gini-value" id="giniValue">0.00</div>
+                <div class="gini-label">Gini Coefficient</div>
+            </div>
+            <div class="gini-box">
+                <div class="gini-value" id="minorityShare">15%</div>
+                <div class="gini-label">Minority Attention Share</div>
+            </div>
+            <div class="gini-box">
+                <div class="gini-value" id="topShare">5%</div>
+                <div class="gini-label">Top Creator's Share</div>
+            </div>
+        </div>
+
+        <div class="insight-text" id="insightText">
+            At 0% boost, attention is distributed equally. Every creator gets 5% of total attention.
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('chart');
+        const ctx = canvas.getContext('2d');
+
+        const N = 20;
+        const MINORITY_COUNT = 3; // 3 out of 20 = 15%
+        const MINORITY_INDICES = [2, 9, 16]; // Spread across the ranking
+
+        // Base attention: equal for all
+        const BASE_ATTENTION = 100 / N; // 5% each
+
+        function powerLaw(rank, alpha) {
+            // Zipf-like distribution
+            return 1 / Math.pow(rank + 1, alpha);
+        }
+
+        function calculateDistribution(boost) {
+            const alpha = boost / 25; // 0 → alpha=0 (equal), 100 → alpha=4 (extreme)
+            let shares = [];
+
+            for (let i = 0; i < N; i++) {
+                if (alpha === 0) {
+                    shares.push(BASE_ATTENTION);
+                } else {
+                    shares.push(powerLaw(i, alpha));
+                }
+            }
+
+            // Normalize to 100%
+            const total = shares.reduce((a, b) => a + b, 0);
+            shares = shares.map(s => (s / total) * 100);
+
+            // Minority penalty: as boost increases, minority creators drop in ranking
+            // Simulate: minority creators lose proportionally more because their content
+            // doesn't match "mainstream engagement patterns"
+            if (alpha > 0) {
+                const penalty = 1 - (boost / 100) * 0.7; // up to 70% attention reduction
+                MINORITY_INDICES.forEach(idx => {
+                    shares[idx] *= penalty;
+                });
+                // Redistribute lost attention to top creators
+                const lost = shares.reduce((a, b) => a + b, 0);
+                const redistFactor = 100 / lost;
+                shares = shares.map(s => s * redistFactor);
+            }
+
+            return shares;
+        }
+
+        function calculateGini(shares) {
+            const sorted = [...shares].sort((a, b) => a - b);
+            const n = sorted.length;
+            let sumDiffs = 0;
+            for (let i = 0; i < n; i++) {
+                for (let j = 0; j < n; j++) {
+                    sumDiffs += Math.abs(sorted[i] - sorted[j]);
+                }
+            }
+            const mean = sorted.reduce((a, b) => a + b, 0) / n;
+            return sumDiffs / (2 * n * n * mean);
+        }
+
+        function drawChart(shares) {
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * dpr;
+            canvas.height = 220 * dpr;
+            ctx.scale(dpr, dpr);
+
+            const w = rect.width;
+            const h = 220;
+            const padding = { top: 10, right: 15, bottom: 25, left: 35 };
+            const chartW = w - padding.left - padding.right;
+            const chartH = h - padding.top - padding.bottom;
+
+            ctx.clearRect(0, 0, w, h);
+
+            const maxVal = Math.max(...shares, 10);
+            const barW = chartW / N - 3;
+
+            // Equal share line
+            const equalY = padding.top + chartH - (BASE_ATTENTION / maxVal) * chartH;
+            ctx.setLineDash([4, 4]);
+            ctx.strokeStyle = '#999';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(padding.left, equalY);
+            ctx.lineTo(w - padding.right, equalY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Y-axis label
+            ctx.fillStyle = '#999';
+            ctx.font = '10px Inter, sans-serif';
+            ctx.textAlign = 'right';
+            ctx.fillText(BASE_ATTENTION.toFixed(0) + '%', padding.left - 5, equalY + 3);
+            ctx.fillText(maxVal.toFixed(0) + '%', padding.left - 5, padding.top + 10);
+
+            // Bars
+            for (let i = 0; i < N; i++) {
+                const barH = (shares[i] / maxVal) * chartH;
+                const x = padding.left + i * (chartW / N) + 1.5;
+                const y = padding.top + chartH - barH;
+
+                const isMinority = MINORITY_INDICES.includes(i);
+                ctx.fillStyle = isMinority ? '#ff6a00' : '#b0b0b0';
+
+                // Rounded top
+                const radius = Math.min(3, barW / 2);
+                ctx.beginPath();
+                ctx.moveTo(x, y + radius);
+                ctx.arcTo(x, y, x + barW, y, radius);
+                ctx.arcTo(x + barW, y, x + barW, y + barH, radius);
+                ctx.lineTo(x + barW, padding.top + chartH);
+                ctx.lineTo(x, padding.top + chartH);
+                ctx.closePath();
+                ctx.fill();
+
+                // Creator number
+                ctx.fillStyle = '#aaa';
+                ctx.font = '9px Inter, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(i + 1, x + barW / 2, h - 5);
+            }
+        }
+
+        function updateChart() {
+            const boost = parseInt(document.getElementById('boostSlider').value);
+            document.getElementById('boostValue').textContent = boost + '%';
+
+            const shares = calculateDistribution(boost);
+            const gini = calculateGini(shares);
+
+            drawChart(shares);
+
+            // Update stats
+            const giniEl = document.getElementById('giniValue');
+            giniEl.textContent = gini.toFixed(2);
+            giniEl.style.color = gini > 0.5 ? '#e74c3c' : gini > 0.3 ? '#ff6a00' : '#27ae60';
+
+            const minorityTotal = MINORITY_INDICES.reduce((sum, idx) => sum + shares[idx], 0);
+            document.getElementById('minorityShare').textContent = minorityTotal.toFixed(1) + '%';
+
+            document.getElementById('topShare').textContent = shares[0].toFixed(1) + '%';
+
+            // Insight text
+            const insight = document.getElementById('insightText');
+            if (boost === 0) {
+                insight.textContent = 'At 0% boost, attention is distributed equally. Every creator gets 5% of total attention.';
+            } else if (boost < 30) {
+                insight.textContent = `Mild optimization. The top creator already receives ${shares[0].toFixed(1)}% — ${(shares[0] / BASE_ATTENTION).toFixed(1)}× the equal share. Minority creators still visible at ${minorityTotal.toFixed(1)}%.`;
+            } else if (boost < 60) {
+                insight.textContent = `Moderate optimization. Gini of ${gini.toFixed(2)} exceeds most countries' wealth inequality. Minority voices are shrinking to ${minorityTotal.toFixed(1)}% — below their ${(MINORITY_COUNT / N * 100).toFixed(0)}% population share.`;
+            } else if (boost < 85) {
+                insight.textContent = `Heavy optimization. The top 3 creators capture more attention than all minorities combined. This is the algorithmic equivalent of the "Missing White Woman Syndrome" — engagement-optimized invisibility.`;
+            } else {
+                insight.textContent = `Winner-take-all. Gini of ${gini.toFixed(2)} means near-total concentration. Minority creators are functionally invisible — not because their content is worse, but because the algorithm learned that majority-audience engagement patterns are "optimal."`;
+            }
+
+            // Gini box color
+            const giniBox = document.getElementById('giniBox');
+            giniBox.style.borderColor = gini > 0.5 ? '#e74c3c' : gini > 0.3 ? '#ff6a00' : '#27ae60';
+        }
+
+        // Initial render
+        window.addEventListener('resize', updateChart);
+        updateChart();
+    </script>
+</body>
+
+</html>

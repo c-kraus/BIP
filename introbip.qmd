@@ -31,6 +31,13 @@ Researcher Joy Buolamwini put it this way: "The danger of AI is not that it will
 
 This isn't a bug in the code. This is structural discrimination, translated into mathematics.
 
+The documentary *Coded Bias* follows Joy Buolamwini as she uncovers the hidden biases embedded in facial recognition algorithms:
+
+:::{.callout-tip}
+## Optional: Coded Bias — Official Trailer (YouTube, 2 min)
+{{< video https://www.youtube.com/watch?v=jZl55PsfZJQ >}}
+:::
+
 ---
 
 ## What You'll Learn in This Chapter
@@ -86,6 +93,13 @@ A comprehensive study analyzing 328 research papers (Hickman et al., 2024) shows
 
 A meta-analysis of 150 fairness studies (IEEE, 2024): 23% bias reduction costs an average of 9% accuracy. That's not a technical limit—that's a value judgment.
 :::
+
+Explore the interactive flowchart below to see exactly where bias enters each phase of the ML lifecycle:
+
+<iframe src="widgets/lifecycle.html" 
+        width="100%" height="500px" frameborder="0"
+        title="ML Lifecycle: Bias Entry Points — Interactive Flowchart">
+</iframe>
 
 ::: {.details}
 #### For Social Work Students: Why People with Disabilities Are Invisible
@@ -271,6 +285,52 @@ But a common principle: **The system reproduces and amplifies existing inequalit
 :::
 ---
 
+### Story 5: When Two Identical Twins Disagree on Fairness
+
+**You train the same algorithm twice.** Same data. Same architecture. Same hyperparameters. You run it on Monday, you run it on Friday. Surely the results converge?
+
+They don't.
+
+ML training is stochastic: random weight initialization, random mini-batch sampling, random dropout masks. Two "sibling models" — born from the same blueprint — can diverge by up to **12.6% on fairness metrics**. Model A passes the legal threshold for non-discrimination. Model B — its identical twin — violates it. Researchers call this the **"Small Change Makes a Big Difference" (SCMBD)** phenomenon.
+
+Think about what this means. A company builds a hiring algorithm. They test it, it's fair, they deploy it. Three months later they retrain — same code, same data, new random seed. Suddenly, women are ranked 8% lower. Nobody changed anything. Nobody made a biased decision. The dice just landed differently.
+
+This challenges a comforting assumption: that good intentions plus good data equal fair outcomes. They don't — not necessarily. Fairness isn't just a property of the design. It's partially a roll of the dice.
+
+::: {.details}
+#### For Computer Science Students: Why Stochasticity Breaks Due Process
+
+The legal principle of **due process** requires that identical cases receive identical treatment. But if Model A (trained Tuesday) grants a loan and Model B (trained Wednesday, same data) denies it, which model is "right"?
+
+Cooper et al. show that across 328 studies, fairness metrics vary dramatically between training runs. The standard approach — train once, evaluate once, deploy — gives a false sense of confidence. A single evaluation is a sample of one from a distribution of possible outcomes.
+
+**What this demands:**
+- Train multiple models (ensemble approach) and evaluate fairness across the ensemble
+- Report fairness metrics with confidence intervals, not point estimates
+- Treat fairness as a distributional property, not a binary pass/fail
+- Establish regulatory frameworks that account for stochastic variance
+:::
+
+::: {.details}
+#### For Social Work Students: When "The System" Is Literally Random
+
+You already know that bureaucratic systems treat identical people differently depending on which caseworker, which day, which office. Algorithmic systems were supposed to fix this — consistent, reproducible, objective.
+
+But stochasticity means algorithmic systems have their own version of the caseworker lottery. Your client's loan application might succeed or fail depending on when the model was last retrained. Their risk score might shift from "low" to "high" because of a random number generator.
+
+The difference: When a human caseworker is inconsistent, you can appeal to their supervisor. When an algorithm is inconsistent, the inconsistency is invisible — hidden inside the training process, never surfaced in the output.
+
+**Your role:** When clients receive different outcomes from the same system at different times, document it. Pattern evidence of algorithmic inconsistency strengthens legal challenges under the EU AI Act's requirements for consistency and reproducibility.
+:::
+
+Try it yourself — click "Train Model" ten times and watch how the same setup produces different fairness outcomes:
+
+<iframe src="widgets/fairness-dice.html" 
+        width="100%" height="480px" frameborder="0"
+        title="The Fairness Dice — Stochasticity in ML Training">
+</iframe>
+
+
 ## When AI Couldn't See Your Face
 
 **Boston, 2016.** Joy Buolamwini, a graduate student at MIT, is working on a robotics project. She needs facial recognition software to detect when she's in front of the camera. She runs the code.
@@ -430,6 +490,13 @@ Students who start with fewer resources ($P_0$ low) receive less support going f
 - Question whether predictive risk scoring should exist at all in educational contexts
 :::
 
+Run the simulation below to watch this feedback loop unfold in real time — and notice how identical crime rates produce wildly different arrest records:
+
+<iframe src="widgets/loop.html" 
+        width="100%" height="600px" frameborder="0"
+        title="Predictive Policing Feedback Loop — Interactive Simulation">
+</iframe>
+
 ::: {.details}
 #### For Social Work Students: When "Data-Driven" Means "Discrimination-Driven"
 
@@ -569,6 +636,48 @@ Validate your client's experience: "This isn't about you. The AI learned from a 
 
 ---
 
+## When Algorithms Decide Who Gets Seen
+
+Attention is a scarce resource — and algorithms distribute it unequally. Studies measuring "attention inequality" in social networks and search engines find Gini coefficients that rival or exceed wealth inequality. The top 1% of content creators capture over 90% of algorithmic visibility. Everyone else shouts into the void.
+
+The **"Missing White Woman Syndrome"** illustrates this at its most visceral: media coverage of missing persons is overwhelmingly concentrated on young, white, attractive women. Algorithms don't create this bias — but they amplify it. Recommendation engines optimize for engagement, and engagement follows existing attention patterns. Stories that deviate from the "template victim" receive less clicks, less shares, less algorithmic boost, less visibility — a feedback loop that makes the invisible more invisible.
+
+For people with disabilities, this dynamic is pervasive. Their stories, achievements, and perspectives are systematically de-amplified — not because anyone decided to suppress them, but because "engagement optimization" rewards content that matches majority expectations. A TikTok of someone walking their dog gets boosted. A TikTok of someone navigating the same park in a wheelchair — equally joyful, equally mundane — gets fewer views because the algorithm hasn't learned that this, too, is normal life.
+
+Use the slider below to see how engagement optimization reshapes attention — and notice when minority creators become invisible:
+
+<iframe src="widgets/attention-gini.html" 
+        width="100%" height="550px" frameborder="0"
+        title="Attention Inequality — Gini Coefficient Visualization">
+</iframe>
+
+::: {.case-study}
+#### Exercise: Mapping Attention Inequality
+
+**Part 1 (5 minutes):** Open your social media feed. Scroll through the first 20 posts recommended to you. Count:
+- How many feature people with visible disabilities?
+- How many feature non-white people in non-stereotypical roles?
+- How many were created by accounts with fewer than 1,000 followers?
+
+**Part 2 (Discussion):**
+
+*For Social Work:* How does algorithmic invisibility affect your clients' sense of belonging? If a disabled person never sees themselves represented in algorithmically curated content, what's the psychological impact?
+
+*For Computer Science:* Engagement-maximizing algorithms create winner-take-all dynamics. How would you design a recommendation system that optimizes for cognitive diversity instead of engagement?
+
+*For Everyone:* Who benefits from the current attention economy? Who pays the cost?
+
+::: {.solution}
+**What you'll likely find:** Fewer than 5% of algorithmically recommended content features people with disabilities — despite 15-20% of the global population being disabled. The gap between population share and representation share is the "attention deficit."
+
+**The mechanism:** Recommendation algorithms optimize for predicted engagement (clicks, shares, watch time). Content featuring disability gets lower predicted engagement because historical data shows lower engagement — not because people don't care, but because the algorithm never showed it to enough people to find out. This is a classic cold-start problem weaponized against marginalized groups.
+
+**Design alternative:** Instead of pure engagement optimization, add a "diversity bonus" that boosts content from underrepresented perspectives. Spotify does this for independent musicians. Social platforms could do it for marginalized voices — if they chose to.
+:::
+:::
+
+---
+
 ## When AI Could Have Helped—But Didn't
 
 So far, we've focused on harms. But AI isn't inherently oppressive. When designed inclusively, it can reduce barriers that exclusionary societies create.
@@ -645,6 +754,11 @@ Again: The technology has potential. The question is implementation.
 - User cannot opt out without losing access
 
 Example: An adaptive learning platform that helps you study vs. one that labels you "at risk" and shares that with administration. Same technology. Opposite impacts.
+:::
+
+::: {.flip-card}
+#### Predictive Privacy
+AI systems can infer sensitive attributes you never disclosed — sexual orientation from Facebook likes, disability status from browsing patterns, addiction risk from purchase history, political affiliation from music preferences. You didn't share this information. The algorithm *predicted* it from behavioral traces you thought were harmless. And now someone is using those predictions to set your insurance premium, filter your job applications, or target you with manipulative advertising. This isn't surveillance in the traditional sense — nobody is watching you. It's inference at scale, and there's no consent form for what an algorithm *guesses* about you.
 :::
 
 ---
@@ -851,6 +965,53 @@ When features interact, SHAP may misattribute influence. An explanation can be m
 
 ---
 
+Mathematician Cathy O'Neil argues that big data doesn't just reflect reality — it *shapes* it:
+
+:::{.callout-tip}
+## Optional: Cathy O'Neil — "The era of blind faith in big data must end" (YouTube, 13 min)
+{{< video https://www.youtube.com/watch?v=_2u_eHHzRto >}}
+:::
+
+## When Justice Needs Ambiguity
+
+**Consider this word: "reasonable."**
+
+It appears thousands of times in legal texts worldwide. "Reasonable accommodation." "Reasonable doubt." "Reasonable care." It's deliberately vague — because the law needs room to breathe. What's reasonable for a multinational corporation is different from what's reasonable for a sole proprietor. What's reasonable accommodation for a physical disability differs from what's reasonable for a cognitive one. A human judge weighs context, circumstances, intent.
+
+Now translate "reasonable" into code.
+
+You can't. You can set a threshold ("accommodation costs below €5,000 are automatically approved"). You can build a decision tree ("if disability type = X and company size = Y, then accommodation = Z"). But you've replaced judgment with a lookup table. You've traded justice for consistency.
+
+This is **Computational Legalism** — and it's already happening. When social welfare is distributed by automated systems, when housing applications are screened by algorithms, when disability benefits are granted by rule engines — the law's intentional vagueness, which protected edge cases and permitted mercy, is replaced by rigid logic that cannot make exceptions.
+
+::: {.details}
+#### For Computer Science Students: The Neutrality Illusion
+
+Traditional law works through **prohibition**: it defines what's forbidden and leaves everything else open. Code works through **permission**: every possible action must be explicitly designed and enabled.
+
+This creates a fundamental asymmetry. A law that says "employees shall receive reasonable accommodation" delegates judgment to humans. Code that implements this policy must define every accommodation type, every qualifying condition, every edge case — or the accommodation doesn't exist in the system.
+
+The result is what researchers call **justificatory non-neutrality**: every design decision in an automated system is normative. There's no neutral default. Choosing which accommodations appear in the dropdown menu, which disability categories map to which benefits, which thresholds separate "eligible" from "ineligible" — each decision embodies a value judgment, whether the developer intended it or not.
+
+**Practical implication:** When you build systems that implement legal rules, you're not "just coding." You're making policy. Every `if/else` is a value judgment. Document those judgments. Make them reviewable. Build in override mechanisms for cases that don't fit the logic.
+:::
+
+::: {.details}
+#### For Social Work Students: When Your Clients Can't Appeal to a Machine
+
+You know the power of advocacy — sitting across from a caseworker and explaining why *this* family, *these* circumstances, deserve an exception. You can appeal to empathy, context, relationship.
+
+Automated systems eliminate that possibility. A client denied disability benefits by an algorithm can't explain to the algorithm that the cognitive assessment was conducted on a bad day. They can't present new context. They can't ask the algorithm to reconsider.
+
+The technical term is **"resistibility"** — the ability of people to push back against decisions that affect them. Democratic societies depend on this: the right to appeal, to protest, to engage in civil disobedience. Computational Legalism threatens all three.
+
+The most extreme version is what researchers call the **"Pre-Emptopolis"** — an algorithmic governance model where non-conforming behavior isn't punished after the fact, but made *technically impossible*. Imagine a welfare system that doesn't deny fraudulent claims — it prevents them from being submitted in the first place. That sounds efficient. But it also means legitimate edge cases — the single mother whose situation doesn't fit the form — are pre-emptively excluded without anyone ever considering their case.
+
+**Your evolving role:** You're no longer just navigating institutions. You're arguing *against* systems that were designed to make your advocacy unnecessary. That makes your work harder — and more important.
+:::
+
+---
+
 ## Intersectionality: When Bias Multiplies
 
 **Meet three students, all applying for the same scholarship:**
@@ -864,6 +1025,13 @@ A university uses an AI system to screen scholarship applications, looking for "
 **Question:** Which student faces the most algorithmic bias?
 
 **You might think:** Keisha faces bias as a woman + bias as a Black person + bias as a disabled person. So three separate biases, additive.
+
+Toggle disability status in the interactive matrix below to see how bias compounds at intersections:
+
+<iframe src="widgets/intersectionality-matrix.html" 
+        width="100%" height="500px" frameborder="0"
+        title="Intersectionality Matrix — Compound Bias Visualization">
+</iframe>
 
 **Reality:** Keisha faces a distinct form of discrimination that's not just the sum of parts. She experiences **intersectional bias**—qualitatively different from what Anna or Marcus face.
 
@@ -1081,6 +1249,29 @@ If your employer asks you to build:
 
 You can say no. And if you're in a position of privilege, you should.
 
+::: {.details}
+#### Technical Toolkit: Debiasing Strategies
+
+Knowing *what's* wrong is necessary. Knowing *what to do about it* is your professional contribution. Debiasing techniques fall into three categories, depending on when they're applied:
+
+**Pre-Processing (Before Training):**
+- **Resampling / Re-weighting:** Boost underrepresented groups in training data so the model doesn't treat them as noise. If wheelchair users are 0.1% of your image dataset, oversample them until the model learns to recognize wheelchairs as normal, not anomalous
+- **Confounder Removal:** Scrub features that correlate with protected attributes without providing predictive value. Example: removing gendered uniform images from occupation classification datasets
+- **Synthetic Data Generation:** Use generative models to create representative samples for underrepresented intersections — with caution, as poorly done augmentation can amplify stereotypes
+
+**In-Processing (During Training):**
+- **Adversarial Debiasing:** Train two networks simultaneously. Network A makes predictions. Network B (the adversary) tries to predict protected attributes from A's output. A is penalized when B succeeds — forcing A to make decisions that don't encode protected attributes
+- **Fairness-Aware Loss Functions:** Modify the optimization objective to include equality constraints alongside accuracy. Instead of just minimizing $\mathcal{L}_{\text{accuracy}}$, minimize $\mathcal{L}_{\text{accuracy}} + \lambda \cdot \mathcal{L}_{\text{fairness}}$, where $\lambda$ controls the trade-off
+- **Regularization for Minorities:** Prevent the model from "overfitting to the majority" by penalizing large weights on majority-correlated features
+
+**Post-Processing (After Training):**
+- **Equalized Odds Adjustment:** Set different decision thresholds per group to achieve equal false-positive and false-negative rates. This doesn't change the model — it changes how its output is interpreted
+- **Calibration:** Ensure that a predicted probability of 70% means the same thing for all groups (e.g., 70% of Group A *and* 70% of Group B with that score actually receive the positive outcome)
+- **Prompt Engineering (for LLMs):** Explicit fairness instructions in prompts can reduce — though not eliminate — bias in large language model outputs
+
+**The honest truth:** No technique is a silver bullet. Pre-processing can distort data. Adversarial debiasing can reduce overall accuracy. Post-processing can create new unfairness at intersections. Every intervention is a trade-off — and that trade-off is a value judgment, not a technical decision.
+:::
+
 ---
 
 ### For Everyone: Collective Action
@@ -1159,6 +1350,46 @@ Your role: Advocate for clients harmed by algorithmic decisions. Demand transpar
 You bring critical perspective that technical designers lack. **You know how to ask: Who benefits? Who is harmed? Who decides?** These questions are essential to responsible AI deployment.
 
 When algorithms recommend removing a child, denying benefits, or flagging someone as "high risk," you have professional authority to challenge those recommendations. Use it.
+:::
+
+---
+
+## The Pre-Emptopolis: A Thought Experiment
+
+Before we close, consider this: What kind of city would algorithms build if they could?
+
+Researchers use the term **"Algorithmic City"** to describe spaces where algorithms don't just inform decisions — they *are* the decision infrastructure. Traffic flow, energy distribution, police deployment, social services, housing allocation — all optimized, all automated, all consistent.
+
+Sounds efficient. Now push the thought further.
+
+Imagine a university campus where movement is tracked to optimize space usage. Students who avoid crowded areas (perhaps due to social anxiety) are flagged as "isolating" and receive mandatory wellness checks. Students who study at unusual hours (perhaps because they work two jobs) have their card access restricted for "security reasons." Students who visit the disability office frequently have their data shared with academic advisors "to provide better support."
+
+The system isn't malicious. It's optimizing for the metrics it was given: safety, efficiency, student success. But optimization *for what* and *for whom*?
+
+The deepest version of this is the **Pre-Emptopolis** — a governance model where non-conforming behavior isn't punished after the fact, but prevented before it happens. You don't get fined for jaywalking; the crosswalk signal won't change unless you're at the designated crossing point. You don't get denied a loan; the application form won't let you submit if your predicted creditworthiness is below threshold.
+
+This eliminates the space for exception, for context, for mercy. It also eliminates the space for civil disobedience — the essential democratic mechanism by which unjust laws are challenged.
+
+::: {.case-study}
+#### Discussion: Design Your Campus
+
+Your university gives you €10 million to redesign campus infrastructure. The only constraint: You must use AI somewhere.
+
+*For Social Work:* How do you ensure the AI serves students rather than sorting them? What safeguards prevent helpful technology from becoming surveillance?
+
+*For Computer Science:* Design a system that optimizes for equity rather than efficiency. What metrics would you use? What data would you refuse to collect?
+
+*For Everyone:* Where is the line between "smart campus" and "controlled campus"? Who should draw that line?
+
+::: {.solution}
+There's no single right answer — that's the point. But consider these principles:
+
+1. **Resistibility:** Any system must include the ability for individuals to opt out without penalty
+2. **Purpose limitation:** Data collected for one purpose (building access) must never be repurposed (attendance tracking, wellness monitoring)
+3. **Community governance:** A committee including students, disabled students, and staff must oversee any AI deployment — with veto power
+4. **Sunset clauses:** Every system must have a built-in expiration date at which it's evaluated for continuation
+5. **The "midnight test":** If you wouldn't want this system applied to you at your most vulnerable moment, don't build it for others
+:::
 :::
 
 ---
