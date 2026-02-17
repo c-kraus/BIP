@@ -92,14 +92,16 @@ A comprehensive study analyzing 328 research papers (Hickman et al., 2024) shows
 - **Feedback loops**: Biased outputs become new training data
 
 A meta-analysis of 150 fairness studies (IEEE, 2024): 23% bias reduction costs an average of 9% accuracy. That's not a technical limit—that's a value judgment.
-:::
+
 
 Explore the interactive flowchart below to see exactly where bias enters each phase of the ML lifecycle:
 
 <iframe src="widgets/lifecycle.html" 
-        width="100%" height="500px" frameborder="0"
+        width="100%" height="800px" frameborder="0"
         title="ML Lifecycle: Bias Entry Points — Interactive Flowchart">
 </iframe>
+
+:::
 
 ::: {.details}
 #### For Social Work Students: Why People with Disabilities Are Invisible
@@ -276,13 +278,6 @@ Four stories, four different mechanisms:
 But a common principle: **The system reproduces and amplifies existing inequalities.**
 
 
-::: {.content-visible when-format="html"}
-<iframe src="widgets/rejection.html" 
-        style="width: 100%; height: 750px; border: none;" 
-        loading="lazy">
-</iframe>
-
-:::
 ---
 
 ### Story 5: When Two Identical Twins Disagree on Fairness
@@ -326,7 +321,7 @@ The difference: When a human caseworker is inconsistent, you can appeal to their
 Try it yourself — click "Train Model" ten times and watch how the same setup produces different fairness outcomes:
 
 <iframe src="widgets/fairness-dice.html" 
-        width="100%" height="480px" frameborder="0"
+        width="100%" height="550px" frameborder="0"
         title="The Fairness Dice — Stochasticity in ML Training">
 </iframe>
 
@@ -493,7 +488,7 @@ Students who start with fewer resources ($P_0$ low) receive less support going f
 Run the simulation below to watch this feedback loop unfold in real time — and notice how identical crime rates produce wildly different arrest records:
 
 <iframe src="widgets/loop.html" 
-        width="100%" height="600px" frameborder="0"
+        width="100%" height="800px" frameborder="0"
         title="Predictive Policing Feedback Loop — Interactive Simulation">
 </iframe>
 
@@ -647,7 +642,7 @@ For people with disabilities, this dynamic is pervasive. Their stories, achievem
 Use the slider below to see how engagement optimization reshapes attention — and notice when minority creators become invisible:
 
 <iframe src="widgets/attention-gini.html" 
-        width="100%" height="550px" frameborder="0"
+        width="100%" height="600px" frameborder="0"
         title="Attention Inequality — Gini Coefficient Visualization">
 </iframe>
 
@@ -1029,7 +1024,7 @@ A university uses an AI system to screen scholarship applications, looking for "
 Toggle disability status in the interactive matrix below to see how bias compounds at intersections:
 
 <iframe src="widgets/intersectionality-matrix.html" 
-        width="100%" height="500px" frameborder="0"
+        width="100%" height="550px" frameborder="0"
         title="Intersectionality Matrix — Compound Bias Visualization">
 </iframe>
 
