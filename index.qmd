@@ -30,15 +30,12 @@ How GDPR and the EU AI Act regulate AI systems processing personal data. You'll 
 
 ## Who This Is For
 
-This course assumes no prior technical, legal, or ethical training. We've designed it for interdisciplinary groups:
+No prior technical, legal, or ethical training assumed. The course is designed for interdisciplinary groups:
 
-**Computer Science students** will learn why technical performance metrics don't capture ethical harms, and which legal constraints govern deployment.
-
-**Social Work students** will understand how algorithmic systems encode structural discrimination, and which rights protect vulnerable populations.
-
-**Business students** will recognize compliance obligations, liability risks, and reputational consequences of irresponsible AI development.
-
-**All students** will develop critical perspectives on claims that AI is "objective," "neutral," or "just math."
+- **Computer Science students:** Why performance metrics don't capture ethical harms, and which legal constraints govern deployment.
+- **Social Work students:** How algorithmic systems encode structural discrimination, and which rights protect vulnerable populations.
+- **Business students:** Compliance obligations, liability risks, and reputational consequences of irresponsible AI.
+- **All students:** Critical perspectives on claims that AI is "objective," "neutral," or "just math."
 
 ## How to Use These Materials
 
@@ -73,33 +70,9 @@ Optional supplementary material for students wanting detailed technical or legal
 
 ### Pacing
 
-**Minimum engagement:** Read the main text, complete case studies, review key takeaways. Estimated time: 3 hours per module.
+**Minimum engagement** (main text + case studies): ~3 hours per module. **Full engagement** (including deep dives and exercises): ~5–6 hours.
 
-**Full engagement:** Include all deep dives, attempt all exercises, explore further resources. Estimated time: 5-6 hours per module.
-
-**Iterative approach works best:** Read through quickly for overview, then return to complex sections with focused attention.
-
-### Active Reading Strategies
-
-**Don't just read—interact:**
-
-- **Pause at case studies.** Write out your analysis before checking the solution.
-- **Question claims.** When we assert "X causes Y," ask: What's the evidence? Are there alternative explanations?
-- **Connect to experience.** How does this content relate to technologies you use daily? To your planned profession?
-- **Identify gaps.** What questions remain unanswered? What perspectives are missing?
-
-**For interdisciplinary groups:**
-
-If you're studying in mixed teams (computer science + social work, engineering + policy), assign different students to lead discussions on different sections. Technical students can clarify ML concepts; social science students can contextualize power dynamics; legal students can explain regulatory nuances.
-
-### Assessment Preparation
-
-If you're using these materials for coursework:
-
-- **Key takeaways** at the end of each module summarize essential points
-- **Case studies** model the analytical reasoning expected in assessments
-- **Reflection questions** help you articulate your professional positioning
-- **Further resources** provide starting points for deeper research
+In interdisciplinary teams, assign different students to lead different sections: technical students clarify ML concepts; social science students contextualize power dynamics; legal students explain regulatory nuances.
 
 ### A Note on Tone
 

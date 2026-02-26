@@ -4,7 +4,7 @@
 
 Sarah stares at her laptop, reading the automated email for the third time. "Unfortunately, we must inform you that your profile does not meet our requirements." Forty-eight seconds. That's how long it took an algorithm to reject her application—faster than any human could have read her CV.
 
-What the email doesn't say: Sarah has a bachelor's in social work with a 1.3 GPA. She speaks three languages fluently. She served two years as student body representative. But her CV also mentions that she chaired the university's disability rights student group. That she took a semester off when her chronic illness required inpatient treatment. That she worked part-time during her studies, not full-time, because more wasn't physically possible.
+What the email doesn't say: Sarah has a bachelor's in engineering with a 1.3 GPA. She speaks three languages fluently. She served two years as student body representative. But her CV also mentions that she chaired the university's disability rights student group. That she took a semester off when her chronic illness required inpatient treatment. That she worked part-time during her studies, not full-time, because more wasn't physically possible.
 
 The algorithm read this as "employment gap" and "part-time work history." It was trained on CVs of people who never had to pause, never had to work reduced hours, never participated in disability advocacy. It learned that "standard biography" means: no gaps, no disability, no complications.
 
@@ -406,6 +406,12 @@ The system should never have been deployed without:
 - Student ID cards with QR codes (low-tech, inclusive)
 - Community-building initiatives that actually improve safety through relationships, not surveillance
 :::
+:::
+
+:::{.callout-note}
+## → Legal Frameworks Module
+
+The legal response to facial recognition bias is direct: biometric data receives heightened protection under **Art. 9 GDPR**, and the AI Act prohibits both inferring sensitive attributes from biometric data (Art. 5(1)(g)) and real-time biometric identification in public spaces (Art. 5(1)(h)). These provisions are analyzed in the **Legal Frameworks** module.
 :::
 
 ---
@@ -958,6 +964,12 @@ When features interact, SHAP may misattribute influence. An explanation can be m
 **Practical implication:** SHAP tells you *what* the model used, not *whether it should have used it*. Explaining a discriminatory decision doesn't make it fair.
 :::
 
+:::{.callout-note}
+## → Legal Frameworks Module
+
+The legal obligation to disclose algorithmic logic — and its inherent limits — is covered in the **Legal Frameworks** module: Art. 13-15 GDPR require "meaningful information about the logic involved" in automated decisions, but as the SHAP example demonstrates, satisfying this transparency obligation doesn't automatically produce just outcomes.
+:::
+
 ---
 
 Mathematician Cathy O'Neil argues that big data doesn't just reflect reality — it *shapes* it:
@@ -967,42 +979,10 @@ Mathematician Cathy O'Neil argues that big data doesn't just reflect reality —
 {{< video https://www.youtube.com/watch?v=_2u_eHHzRto >}}
 :::
 
-## When Justice Needs Ambiguity
+:::{.callout-note}
+## → Legal Frameworks Module: The Law's Response
 
-**Consider this word: "reasonable."**
-
-It appears thousands of times in legal texts worldwide. "Reasonable accommodation." "Reasonable doubt." "Reasonable care." It's deliberately vague — because the law needs room to breathe. What's reasonable for a multinational corporation is different from what's reasonable for a sole proprietor. What's reasonable accommodation for a physical disability differs from what's reasonable for a cognitive one. A human judge weighs context, circumstances, intent.
-
-Now translate "reasonable" into code.
-
-You can't. You can set a threshold ("accommodation costs below €5,000 are automatically approved"). You can build a decision tree ("if disability type = X and company size = Y, then accommodation = Z"). But you've replaced judgment with a lookup table. You've traded justice for consistency.
-
-This is **Computational Legalism** — and it's already happening. When social welfare is distributed by automated systems, when housing applications are screened by algorithms, when disability benefits are granted by rule engines — the law's intentional vagueness, which protected edge cases and permitted mercy, is replaced by rigid logic that cannot make exceptions.
-
-::: {.details}
-#### For Computer Science Students: The Neutrality Illusion
-
-Traditional law works through **prohibition**: it defines what's forbidden and leaves everything else open. Code works through **permission**: every possible action must be explicitly designed and enabled.
-
-This creates a fundamental asymmetry. A law that says "employees shall receive reasonable accommodation" delegates judgment to humans. Code that implements this policy must define every accommodation type, every qualifying condition, every edge case — or the accommodation doesn't exist in the system.
-
-The result is what researchers call **justificatory non-neutrality**: every design decision in an automated system is normative. There's no neutral default. Choosing which accommodations appear in the dropdown menu, which disability categories map to which benefits, which thresholds separate "eligible" from "ineligible" — each decision embodies a value judgment, whether the developer intended it or not.
-
-**Practical implication:** When you build systems that implement legal rules, you're not "just coding." You're making policy. Every `if/else` is a value judgment. Document those judgments. Make them reviewable. Build in override mechanisms for cases that don't fit the logic.
-:::
-
-::: {.details}
-#### For Social Work Students: When Your Clients Can't Appeal to a Machine
-
-You know the power of advocacy — sitting across from a caseworker and explaining why *this* family, *these* circumstances, deserve an exception. You can appeal to empathy, context, relationship.
-
-Automated systems eliminate that possibility. A client denied disability benefits by an algorithm can't explain to the algorithm that the cognitive assessment was conducted on a bad day. They can't present new context. They can't ask the algorithm to reconsider.
-
-The technical term is **"resistibility"** — the ability of people to push back against decisions that affect them. Democratic societies depend on this: the right to appeal, to protest, to engage in civil disobedience. Computational Legalism threatens all three.
-
-The most extreme version is what researchers call the **"Pre-Emptopolis"** — an algorithmic governance model where non-conforming behavior isn't punished after the fact, but made *technically impossible*. Imagine a welfare system that doesn't deny fraudulent claims — it prevents them from being submitted in the first place. That sounds efficient. But it also means legitimate edge cases — the single mother whose situation doesn't fit the form — are pre-emptively excluded without anyone ever considering their case.
-
-**Your evolving role:** You're no longer just navigating institutions. You're arguing *against* systems that were designed to make your advocacy unnecessary. That makes your work harder — and more important.
+What happens when legal rules are translated into rigid algorithms — trading the law's intentional flexibility for computational consistency? How the law attempts to preserve space for human judgment is covered in the **Legal Frameworks** module: **Art. 22 GDPR** grants individuals the right to contest solely automated decisions, and **Art. 14 of the EU AI Act** mandates genuine human oversight — including the explicit ability to override algorithmic outputs.
 :::
 
 ---
