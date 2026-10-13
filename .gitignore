@@ -6,3 +6,6 @@
 __pycache__/
 .claude
 /.luarc.json
+
+# PDFs are build output
+*.pdf
